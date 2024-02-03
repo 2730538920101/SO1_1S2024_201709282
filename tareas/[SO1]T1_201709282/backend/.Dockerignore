@@ -1,0 +1,23 @@
+# Archivos y directorios generados por go get
+/bin/
+/pkg/
+/vendor/
+
+# Archivos ejecutables
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Archivos binarios generados por la compilación
+/main
+
+# Archivos de respaldo y temporales
+*~
+*.bak
+*.swp
+*.swo
+
+# Archivos de VSCode
+.vscode/
