@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+
+    # Servicio para la base de datos
+  database:
+    build:
+      context: ./database
+    image: t2_database
+    container_name: t2_database_container
+    volumes:
+      - t2_data:/data/db
+    ports:
+      - "27017:27017"
+    networks:
+      - t2_network
+
+  # Servicio para el backend
+  backend:
+    build:
+      context: ./backend
+    image: t2_backend
+    container_name: t2_backend_container
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+    networks:
+      - t2_network
+    restart: always
+    
+
+  # Servicio para el frontend
+  frontend:
+    build:
+      context: ./frontend
+    image: t2_frontend
+    container_name: t2_frontend_container
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - t2_network
+
+volumes:
+  t2_data:
+
+networks:
+  t2_network:
