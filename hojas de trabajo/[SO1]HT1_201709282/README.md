@@ -1,2 +1,0 @@
-LINK DEL VIDEO: 
-

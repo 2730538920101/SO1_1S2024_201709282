@@ -1,0 +1,55 @@
+/* App component styling */
+.App-header {
+    background-color: #d270e6; /* Dark background color */
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: #cae4eb; /* Light text color */
+  }
+  
+  .container {
+    margin-top: 20px;
+  }
+  
+  /* Row styling */
+  .row {
+    display: flex;
+    justify-content: space-around;
+    flex-wrap: wrap;
+  }
+  
+  /* RAM info box styling */
+  .ram-info {
+    background-color: #e73922; /* Blue-gray background color */
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* RAM title styling */
+  .ram-title {
+    font-size: 1.2rem;
+  }
+  
+  /* Circular progress styling */
+  .circular-progress {
+    margin-top: 20px;
+  }
+  
+  /* Custom styles for Circular Progressbar */
+  .react-circular-progressbar {
+    width: 200px;
+    height: 200px;
+  }
+  
+  /* Additional styling for the circular progress bar */
+  .CircularProgressbar {
+    circle {
+      stroke-linecap: round;
+    }
+  }
+  

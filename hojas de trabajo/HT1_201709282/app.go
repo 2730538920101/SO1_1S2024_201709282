@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"fmt"
+	"os/exec"
 )
 
 // App struct
@@ -23,6 +24,10 @@ func (a *App) startup(ctx context.Context) {
 
 // Greet returns a greeting for the given name
 func (a *App) Greet(name string) string {
-	return fmt.Sprintf("Hello %s, It's show time!", name)
+	cmd := exec.Command("sh", "-c", "cat /proc/informacion_memoria")
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		return fmt.Sprintf("Error: %s", err.Error())
+	}
+	return string(out)
 }
-
