@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react';
-import logo from './assets/images/logo-universal.png';
 import './App.css';
 import {Greet} from "../wailsjs/go/main/App";
 import 'bootstrap/dist/css/bootstrap.min.css'
