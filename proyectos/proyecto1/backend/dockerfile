@@ -1,0 +1,7 @@
+FROM golang:latest
+WORKDIR /app
+COPY . .
+RUN go mod download
+RUN go build -o mi-api
+EXPOSE 5000
+CMD ["./mi-api"]

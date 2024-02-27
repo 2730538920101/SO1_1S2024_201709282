@@ -1,0 +1,23 @@
+# Binarios y ejecutables
+/bin/
+/pkg/
+
+# Archivos de configuración
+/.env
+
+# Archivos de compilación y log
+*.log
+*.out
+*.test
+
+# Archivos temporales
+*.tmp
+
+# Carpetas generadas por IDEs/editores
+.idea/
+.vscode/
+
+
+# Archivos de configuración del sistema operativo
+.DS_Store
+Thumbs.db

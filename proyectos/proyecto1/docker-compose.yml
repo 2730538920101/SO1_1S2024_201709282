@@ -1,0 +1,50 @@
+version: '3'
+
+services:
+
+    # Servicio para la base de datos
+  database:
+    build:
+      context: ./database
+    image: p1_database
+    container_name: p1_database_container
+    volumes:
+      - p1_data:/var/lib/mysql
+    ports:
+      - "3306:3306"
+    networks:
+      - p1_network
+
+  # Servicio para el backend
+  backend:
+    build:
+      context: ./backend
+    image: p1_backend
+    container_name: p1_backend_container
+    ports:
+      - "5000:5000"
+    depends_on:
+      - database
+    networks:
+      - p1_network
+    restart: always
+    
+
+  # Servicio para el frontend
+  frontend:
+    build:
+      context: ./frontend
+    image: p1_frontend
+    container_name: p1_frontend_container
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    networks:
+      - p1_network
+
+volumes:
+  p1_data:
+
+networks:
+  p1_network:

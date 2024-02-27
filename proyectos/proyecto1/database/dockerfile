@@ -1,0 +1,14 @@
+# Utilizamos la imagen oficial de MySQL
+FROM mysql:latest
+
+# Establecemos las variables de entorno para la configuración de MySQL
+ENV MYSQL_ROOT_PASSWORD=root
+ENV MYSQL_DATABASE=proyecto1
+ENV MYSQL_USER=sopes
+ENV MYSQL_PASSWORD=sopes1234
+
+# Copiamos el script de inicialización a la carpeta de entrada del contenedor
+COPY ./database-init.sql /docker-entrypoint-initdb.d/
+
+# Exponemos el puerto por defecto de MySQL
+EXPOSE 3306
