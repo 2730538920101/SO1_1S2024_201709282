@@ -8,7 +8,10 @@ import (
 )
 
 func main() {
-	router := handlers.ApiTest()
+	go handlers.ActualizarDatosCPU() // Iniciar la rutina de actualización de datos de CPU
+	go handlers.ActualizarDatosRAM() // Iniciar la rutina de actualización de datos de RAM
+
+	router := handlers.NewRouter()
 	port := 5000
 	fmt.Printf("Escuchando en http://localhost:%d\n", port)
 
