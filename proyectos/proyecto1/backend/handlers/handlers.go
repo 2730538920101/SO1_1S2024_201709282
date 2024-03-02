@@ -80,7 +80,12 @@ func HandleCPUDatos(w http.ResponseWriter, r *http.Request) {
 	// Mutex para proteger la sección crítica
 	models.Mutex.Lock()
 	defer models.Mutex.Unlock()
-
+	err := db.InsertCPU(informacionProcesos.PorcentajeCPU)
+	if err != nil {
+		log.Printf("error al insertar datos de CPU en la base de datos: %s", err)
+		http.Error(w, "error interno del servidor", http.StatusInternalServerError)
+		return
+	}
 	// Recorre la lista de procesos y realiza la inserción en la base de datos
 	for _, proceso := range informacionProcesos.Procesos {
 		// Insertar proceso en la base de datos

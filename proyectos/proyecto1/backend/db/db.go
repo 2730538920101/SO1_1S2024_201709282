@@ -60,3 +60,10 @@ func InsertRAM(totalMemoria, memoriaLibre, memoriaUtilizada int, porcentajeUtili
 		totalMemoria, memoriaLibre, memoriaUtilizada, porcentajeUtilizado)
 	return err
 }
+
+// InsertCPU inserta datos de CPU en la base de datos
+func InsertCPU(porcentajeUtilizado float64) error {
+	_, err := db.Exec("INSERT INTO CPU (PORCENTAJE_UTILIZADO) VALUES (?)",
+		porcentajeUtilizado)
+	return err
+}

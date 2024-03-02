@@ -27,7 +27,8 @@ type ProcesoPadre struct {
 
 // Estructura principal
 type InformacionProcesos struct {
-	Procesos []ProcesoPadre `json:"procesos"`
+	PorcentajeCPU float64        `json:"porcentaje_utilizacion_cpu"`
+	Procesos      []ProcesoPadre `json:"procesos"`
 }
 
 // RAM representa la estructura de información de RAM
