@@ -21,6 +21,8 @@ MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Módulo CPU - Laboratorio Sistemas Operativos 1");
 MODULE_AUTHOR("Carlos Javier Martinez Polanco");
 
+static void imprimir_hijos(struct seq_file *archivo, struct list_head *hijos);
+
 static int mostrar_informacion_cpu(struct seq_file *archivo, void *v) {
     seq_printf(archivo, "{\n");
 
@@ -30,7 +32,7 @@ static int mostrar_informacion_cpu(struct seq_file *archivo, void *v) {
 
     for_each_process(cpu) {
         if (!first_process) {
-            seq_printf(archivo, "    },\n");
+            seq_printf(archivo, ",\n");
         }
         first_process = 0;
 
@@ -52,49 +54,50 @@ static int mostrar_informacion_cpu(struct seq_file *archivo, void *v) {
         // Verificar si el proceso tiene hijos
         if (!list_empty(&cpu->children)) {
             seq_printf(archivo, "      \"hijos\": [\n");
-
-            struct list_head *lstProcess;
-            struct task_struct *child;
-
-            int first_child = 1;
-
-            list_for_each(lstProcess, &(cpu->children)) {
-                if (!first_child) {
-                    seq_printf(archivo, "        },\n");
-                }
-                first_child = 0;
-
-                child = list_entry(lstProcess, struct task_struct, sibling);
-
-                seq_printf(archivo, "        {\n");
-                seq_printf(archivo, "          \"ID_PROCESO_HIJO\": %d,\n", child->pid);
-                seq_printf(archivo, "          \"PID_HIJO\": %d,\n", child->pid);
-                seq_printf(archivo, "          \"Nombre_HIJO\": \"%s\",\n", child->comm);
-                seq_printf(archivo, "          \"Estado_HIJO\": %u,\n", child->__state);
-
-                if (child->mm) {
-                    rss = get_mm_rss(child->mm) << PAGE_SHIFT;
-                    seq_printf(archivo, "          \"RSS_HIJO\": %lu,\n", rss);
-                } else {
-                    seq_printf(archivo, "          \"RSS_HIJO\": null,\n");
-                }
-
-                seq_printf(archivo, "          \"UID_HIJO\": %u\n", from_kuid(&init_user_ns, child->cred->user->uid));
-            }
-
-            seq_printf(archivo, "        }\n");
+            imprimir_hijos(archivo, &cpu->children);
+            seq_printf(archivo, "\n      ]");
+        } else {
+            seq_printf(archivo, "      \"hijos\": []");
         }
 
-        if (list_is_last(&cpu->tasks, &init_task.tasks)) {
-            // Si es el último proceso, no imprimir la coma
-            seq_printf(archivo, "    }\n");
-        }
+        seq_printf(archivo, "\n    }");
     }
 
-    seq_printf(archivo, "  ]\n");
+    seq_printf(archivo, "\n  ]\n");
     seq_printf(archivo, "}\n");
 
     return 0;
+}
+
+static void imprimir_hijos(struct seq_file *archivo, struct list_head *hijos) {
+    struct list_head *lstProcess;
+    struct task_struct *child;
+    int first_child = 1;
+
+    list_for_each(lstProcess, hijos) {
+        if (!first_child) {
+            seq_printf(archivo, ",\n");
+        }
+        first_child = 0;
+
+        child = list_entry(lstProcess, struct task_struct, sibling);
+
+        seq_printf(archivo, "        {\n");
+        seq_printf(archivo, "          \"ID_PROCESO_HIJO\": %d,\n", child->pid);
+        seq_printf(archivo, "          \"PID_HIJO\": %d,\n", child->pid);
+        seq_printf(archivo, "          \"Nombre_HIJO\": \"%s\",\n", child->comm);
+        seq_printf(archivo, "          \"Estado_HIJO\": %u,\n", child->__state);
+
+        if (child->mm) {
+            rss = get_mm_rss(child->mm) << PAGE_SHIFT;
+            seq_printf(archivo, "          \"RSS_HIJO\": %lu,\n", rss);
+        } else {
+            seq_printf(archivo, "          \"RSS_HIJO\": null,\n");
+        }
+
+        seq_printf(archivo, "          \"UID_HIJO\": %u\n", from_kuid(&init_user_ns, child->cred->user->uid));
+        seq_printf(archivo, "        }");
+    }
 }
 
 // Función que se ejecutará cada vez que se lea el archivo con el comando CAT
