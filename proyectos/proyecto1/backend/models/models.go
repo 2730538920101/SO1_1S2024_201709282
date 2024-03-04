@@ -2,7 +2,10 @@
 
 package models
 
-import "sync"
+import (
+	"sync"
+	"time"
+)
 
 // Estructura para representar un proceso hijo
 type ProcesoHijo struct {
@@ -39,6 +42,30 @@ type RAM struct {
 		MemoriaUtilizada    int     `json:"memoria_utilizada"`
 		PorcentajeUtilizado float64 `json:"porcentaje_utilizado"`
 	} `json:"informacion_memoria"`
+}
+
+// CPUData representa la estructura para almacenar datos de CPU en la base de datos
+type CPUData struct {
+	ID             int       `json:"id"`
+	Porcentaje     float64   `json:"porcentaje"`
+	TiempoRegistro time.Time `json:"tiempo_registro"`
+}
+
+// RAMData representa la estructura para almacenar datos de RAM en la base de datos
+type RAMData struct {
+	ID                  int       `json:"id"`
+	PorcentajeUtilizado float64   `json:"porcentaje_utilizado"`
+	TiempoRegistro      time.Time `json:"tiempo_registro"`
+}
+
+// CPUDatosResponse representa el formato de respuesta deseado para datos de CPU
+type CPUDatosResponse struct {
+	ListaCPU []CPUData `json:"lista_cpu"`
+}
+
+// RAMDatosResponse representa el formato de respuesta deseado para datos de RAM
+type RAMDatosResponse struct {
+	ListaRAM []RAMData `json:"lista_ram"`
 }
 
 // Mutex para proteger la sección crítica

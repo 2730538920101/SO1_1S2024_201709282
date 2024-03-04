@@ -137,6 +137,40 @@ func HandleRAMDatos(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, `%s`, datosRAM)
 }
 
+// HandleCPUDatosLista retorna la lista de datos de CPU al endpoint correspondiente
+func HandleCPUDatosLista(w http.ResponseWriter, r *http.Request) {
+	listaCPU, err := db.ObtenerListaCPUUltimos10Minutos()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("error al obtener lista de datos de CPU: %s", err), http.StatusInternalServerError)
+		return
+	}
+
+	// Crear la estructura de respuesta
+	respuestaCPU := models.CPUDatosResponse{
+		ListaCPU: listaCPU,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(respuestaCPU)
+}
+
+// HandleRAMDatosLista retorna la lista de datos de RAM al endpoint correspondiente
+func HandleRAMDatosLista(w http.ResponseWriter, r *http.Request) {
+	listaRAM, err := db.ObtenerListaRAMUltimos10Minutos()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("error al obtener lista de datos de RAM: %s", err), http.StatusInternalServerError)
+		return
+	}
+
+	// Crear la estructura de respuesta
+	respuestaRAM := models.RAMDatosResponse{
+		ListaRAM: listaRAM,
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(respuestaRAM)
+}
+
 // NewRouter devuelve un enrutador configurado con manejadores
 func NewRouter() *mux.Router {
 	router := mux.NewRouter()
@@ -146,6 +180,12 @@ func NewRouter() *mux.Router {
 
 	// Endpoint para datos de RAM
 	router.HandleFunc("/ram", HandleRAMDatos).Methods("GET")
+
+	// Endpoint para historico de CPU
+	router.HandleFunc("/historico_cpu", HandleCPUDatosLista).Methods("GET")
+
+	// Endpoint para historico de la RAM
+	router.HandleFunc("/historico_ram", HandleRAMDatosLista).Methods("GET")
 
 	return router
 }

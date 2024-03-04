@@ -3,8 +3,10 @@
 package db
 
 import (
+	"backend/models"
 	"database/sql"
 	"fmt"
+	"time"
 
 	_ "github.com/go-sql-driver/mysql" // Importa el controlador MySl
 )
@@ -66,4 +68,64 @@ func InsertCPU(porcentajeUtilizado float64) error {
 	_, err := db.Exec("INSERT INTO CPU (PORCENTAJE_UTILIZADO) VALUES (?)",
 		porcentajeUtilizado)
 	return err
+}
+
+// ObtenerListaCPUUltimos10Minutos obtiene la lista de porcentajes de CPU y sus marcas de tiempo
+func ObtenerListaCPUUltimos10Minutos() ([]models.CPUData, error) {
+	tiempoLimite := time.Now().Add(-10 * time.Minute)
+	rows, err := db.Query("SELECT ID_CPU, PORCENTAJE_UTILIZADO, TIEMPO FROM CPU WHERE TIEMPO >= ? ORDER BY TIEMPO", tiempoLimite)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var listaCPU []models.CPUData
+	for rows.Next() {
+		var data models.CPUData
+		var tiempoDB []uint8
+		if err := rows.Scan(&data.ID, &data.Porcentaje, &tiempoDB); err != nil {
+			return nil, err
+		}
+
+		// Convierte []uint8 a time.Time
+		tiempo, err := time.Parse("2006-01-02 15:04:05", string(tiempoDB))
+		if err != nil {
+			return nil, err
+		}
+
+		data.TiempoRegistro = tiempo
+		listaCPU = append(listaCPU, data)
+	}
+
+	return listaCPU, nil
+}
+
+// ObtenerListaRAMUltimos10Minutos obtiene la lista de porcentajes de RAM y sus marcas de tiempo
+func ObtenerListaRAMUltimos10Minutos() ([]models.RAMData, error) {
+	tiempoLimite := time.Now().Add(-10 * time.Minute)
+	rows, err := db.Query("SELECT ID_RAM, PORCENTAJE_UTILIZADO, TIEMPO FROM RAM WHERE TIEMPO >= ? ORDER BY TIEMPO", tiempoLimite)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var listaRAM []models.RAMData
+	for rows.Next() {
+		var data models.RAMData
+		var tiempoDB []uint8
+		if err := rows.Scan(&data.ID, &data.PorcentajeUtilizado, &tiempoDB); err != nil {
+			return nil, err
+		}
+
+		// Convierte []uint8 a time.Time
+		tiempo, err := time.Parse("2006-01-02 15:04:05", string(tiempoDB))
+		if err != nil {
+			return nil, err
+		}
+
+		data.TiempoRegistro = tiempo
+		listaRAM = append(listaRAM, data)
+	}
+
+	return listaRAM, nil
 }
