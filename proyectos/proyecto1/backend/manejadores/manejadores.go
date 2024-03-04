@@ -1,13 +1,11 @@
-// handlers/handlers.go
-
-package handlers
+package manejadores
 
 import (
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"net/http"
-	"os/exec"
 	"strings"
 	"time"
 
@@ -35,8 +33,8 @@ func ActualizarDatosCPU() {
 		}
 		cpuDataChan <- datosCPU
 
-		// Actualizar cada minuto, puedes ajustar el intervalo según tus necesidades
-		time.Sleep(time.Minute)
+		// Actualizar cada 500 milisegundos (0.5 segundos)
+		time.Sleep(500 * time.Millisecond)
 	}
 }
 
@@ -50,20 +48,19 @@ func ActualizarDatosRAM() {
 		}
 		ramDataChan <- datosRAM
 
-		// Actualizar cada minuto, puedes ajustar el intervalo según tus necesidades
-		time.Sleep(time.Minute)
+		// Actualizar cada 500 milisegundos (0.5 segundos)
+		time.Sleep(500 * time.Millisecond)
 	}
 }
 
-// ObtenerDatosDesdeArchivo ejecuta un cat al archivo y devuelve su contenido
+// ObtenerDatosDesdeArchivo lee el contenido del archivo y lo devuelve
 func ObtenerDatosDesdeArchivo(filePath string) (string, error) {
-	cmd := exec.Command("cat", filePath)
-	out, err := cmd.CombinedOutput()
+	dat, err := ioutil.ReadFile(filePath)
 	if err != nil {
 		return "", fmt.Errorf("error al obtener datos desde el archivo %s: %w", filePath, err)
 	}
 
-	return strings.TrimSpace(string(out)), nil
+	return strings.TrimSpace(string(dat)), nil
 }
 
 // HandleCPUDatos retorna los datos de CPU al endpoint correspondiente

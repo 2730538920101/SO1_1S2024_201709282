@@ -1,37 +1,58 @@
+/* GraficasTiempoReal.css */
 body {
-    margin: 0;
-  }
-  
-  html, body, #root {
-    height: 100%;
-  }
-  
-  .contenedor_principal {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Alinea el contenido hacia arriba */
-    align-items: center;
-    background-color: #404a59;
-    padding: 20px;
-    margin-top: 60px; /* Ajusta según la altura de tu Navbar */
-  }
-  
-  .contenedor_principal h1 {
-    font-size: 24px;
-    color: #61dafb;
-    text-align: center;
-    margin-top: 20px; /* Espacio desde la parte superior */
-  }
-  
-  /* Añadido para el lienzo */
-  .lienzo {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 1px solid #474646;
-    z-index: -1;
-  }
-  
+  margin: 0;
+}
+
+html, body, #root {
+  height: 100%;
+}
+
+.contenedor_principal {
+  height: calc(100vh - 60px);
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  background-color: #404a59;
+  padding: 20px;
+  margin-top: 60px;
+}
+
+.contenedor_principal h1 {
+  font-size: 24px;
+  color: #61dafb;
+  text-align: center;
+  margin-top: 20px;
+}
+
+.lienzo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #474646;
+  z-index: -1;
+}
+
+.contenedor_graficas {
+  display: flex;
+  flex: 1;
+  width: 100%;
+}
+
+.grafica_izquierda,
+.grafica_derecha {
+  flex: 1;
+  border: 1px solid #ccc;
+  padding: 20px; /* Añade espacio interno para separar el contenido del borde */
+  width: 100%;
+}
+
+.grafica_izquierda {
+  background-color: #e6f7ff; /* Fondo diferente para la gráfica izquierda */
+}
+
+.grafica_derecha {
+  background-color: #ffe6e6; /* Fondo diferente para la gráfica derecha */
+}

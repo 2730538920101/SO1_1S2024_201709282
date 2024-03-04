@@ -6,6 +6,9 @@ const ArbolProcesos = () => {
     <div className='lienzo'>
     <div className='contenedor_principal'>
       <h1>MOSTAR ARBOLES DE LOS PROCESOS</h1>
+      <div className='contenedor_arbol'>
+
+      </div>
     </div>
     </div>
   );

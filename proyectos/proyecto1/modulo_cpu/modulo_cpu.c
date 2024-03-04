@@ -16,20 +16,25 @@
 struct task_struct *cpu; // Estructura que almacena info del cpu
 unsigned long rss;
 // Declaración de la variable global para almacenar el valor de jiffies al inicio
-unsigned long jiffies_at_boot;
+
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Módulo CPU - Laboratorio Sistemas Operativos 1");
 MODULE_AUTHOR("Carlos Javier Martinez Polanco");
 
 static void imprimir_hijos(struct seq_file *archivo, struct list_head *hijos);
-static unsigned long obtener_porcentaje_utilizacion_cpu(void);
+
 
 static int mostrar_informacion_cpu(struct seq_file *archivo, void *v) {
     seq_printf(archivo, "{\n");
-    unsigned long porcentaje_utilizacion = obtener_porcentaje_utilizacion_cpu();
-    unsigned long decimal_part = porcentaje_utilizacion % 100;  // Obtener la parte decimal
+    unsigned long total_cpu_time = jiffies_to_msecs(get_jiffies_64());
+    unsigned long total_usage = 0;
 
-    seq_printf(archivo, "  \"porcentaje_utilizacion_cpu\": %lu.%02lu,\n", porcentaje_utilizacion / 100, decimal_part);
+    for_each_process(cpu) {
+        unsigned long cpu_time = jiffies_to_msecs(cpu->utime + cpu->stime);
+        total_usage += cpu_time;
+    }
+
+    seq_printf(archivo, "  \"porcentaje_utilizacion_cpu\": %ld,\n", (total_usage * 100) / total_cpu_time);
     seq_printf(archivo, "  \"procesos\": [\n");
 
     int first_process = 1;
@@ -104,38 +109,6 @@ static void imprimir_hijos(struct seq_file *archivo, struct list_head *hijos) {
     }
 }
 
-// Funcion para obtener el porcentaje de utilizacion total del CPU
-static unsigned long obtener_porcentaje_utilizacion_cpu(void) {
-    unsigned long system_time = 0;
-    unsigned long total_time = 0;
-
-    for_each_process(cpu) {
-        total_time += cpu->utime + cpu->stime;
-        system_time += cpu->stime;
-    }
-
-    unsigned long elapsed_time = jiffies_to_usecs(jiffies - jiffies_at_boot);
-    
-    // Asegurarse de no dividir por cero
-    if (elapsed_time == 0) {
-        return 0;
-    }
-
-    // Calcular el porcentaje de utilización respecto al tiempo total
-    unsigned long porcentaje_utilizacion = (system_time * 100) / elapsed_time;
-
-    // Asegurarse de que el porcentaje esté en el rango [0, 100]
-    if (porcentaje_utilizacion > 100) {
-        porcentaje_utilizacion = 100;
-    }
-
-    printk(KERN_INFO "total_time: %lu\n", total_time);
-    printk(KERN_INFO "system_time: %lu\n", system_time);
-    printk(KERN_INFO "elapsed_time: %lu\n", elapsed_time);
-    printk(KERN_INFO "porcentaje_utilizacion: %lu\n", porcentaje_utilizacion);
-
-    return porcentaje_utilizacion;
-}
 
 // Función que se ejecutará cada vez que se lea el archivo con el comando CAT
 static int abrir_archivo(struct inode *inode, struct file *file)
@@ -154,7 +127,6 @@ static struct proc_ops operaciones =
 static int __init cargar_modulo(void)
 {
     proc_create("cpu_so1_1s2024", 0, NULL, &operaciones);
-    jiffies_at_boot = jiffies;  // Inicializar jiffies_at_boot
     printk(KERN_INFO "Módulo CPU cargado exitosamente\n");
     return 0;
 }

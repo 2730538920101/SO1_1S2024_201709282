@@ -7,7 +7,9 @@ import (
 	"net/http"
 
 	"backend/db"
-	"backend/handlers"
+	"backend/manejadores"
+
+	"github.com/gorilla/handlers"
 )
 
 func main() {
@@ -16,15 +18,20 @@ func main() {
 
 	defer db.CloseDB() // Asegurar que la conexión a la base de datos se cierre al final
 
-	go handlers.ActualizarDatosCPU() // Iniciar la rutina de actualización de datos de CPU
-	go handlers.ActualizarDatosRAM() // Iniciar la rutina de actualización de datos de RAM
+	go manejadores.ActualizarDatosCPU() // Iniciar la rutina de actualización de datos de CPU
+	go manejadores.ActualizarDatosRAM() // Iniciar la rutina de actualización de datos de RAM
 
-	router := handlers.NewRouter()
+	router := manejadores.NewRouter()
 	port := 5000
 	fmt.Printf("Escuchando en http://localhost:%d\n", port)
 
 	// Usa el número del puerto en la llamada a ListenAndServe
-	err := http.ListenAndServe(fmt.Sprintf(":%d", port), router)
+	err := http.ListenAndServe(fmt.Sprintf(":%d", port),
+		handlers.CORS(
+			handlers.AllowedOrigins([]string{"*"}),
+			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "DELETE", "OPTIONS"}),
+			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization"}),
+		)(router))
 	if err != nil {
 		panic(err)
 	}
