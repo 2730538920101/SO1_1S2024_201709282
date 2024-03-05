@@ -1,11 +1,3 @@
-/* GraficasTiempoReal.css */
-body {
-  margin: 0;
-}
-
-html, body, #root {
-  height: 100%;
-}
 
 .contenedor_principal {
   height: calc(100vh - 60px);
@@ -14,7 +6,7 @@ html, body, #root {
   justify-content: flex-start;
   align-items: center;
   background-color: #404a59;
-  padding: 20px;
+ 
   margin-top: 60px;
 }
 
@@ -32,7 +24,7 @@ html, body, #root {
   width: 100%;
   height: 100%;
   border: 1px solid #474646;
-  z-index: -1;
+  margin-top: 20px;
 }
 
 .contenedor_graficas {
@@ -45,14 +37,61 @@ html, body, #root {
 .grafica_derecha {
   flex: 1;
   border: 1px solid #ccc;
-  padding: 20px; /* Añade espacio interno para separar el contenido del borde */
+  padding: 20px;
   width: 100%;
+  display: flex;
+  flex-direction: column; /* Alinear los elementos internos en columna */
 }
 
 .grafica_izquierda {
-  background-color: #e6f7ff; /* Fondo diferente para la gráfica izquierda */
+  background-color: #e6f7ff;
 }
 
 .grafica_derecha {
-  background-color: #ffe6e6; /* Fondo diferente para la gráfica derecha */
+  background-color: #ffe6e6;
 }
+
+.titulo_btn {
+  display: flex;
+  justify-content: space-between; /* Alinear los elementos en cada extremo */
+  align-items: center;
+  height: 8%;
+}
+
+.panel_grafica {
+  flex: 1; /* Hace que el panel de la gráfica ocupe el espacio restante verticalmente */
+}
+
+hr {
+  width: 100%;
+}
+
+h3 {
+  color: aquamarine;
+}
+
+.btn_der,
+.btn_izq{
+  width: 40%;
+  height: 100%;
+  border-radius: 5%;
+  border-color: #474646;
+  background-color: #58b858;
+  color: #e6f7ff;
+  font-size: large;
+  transition: background-color 0.3s, color 0.3s; /* Agregar transición suave */
+}
+
+.btn_der:hover,
+.btn_izq:hover {
+  background-color: #e6f7ff;
+  color: #58b858;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3); /* Cambiar la sombra al pasar el mouse */
+}
+
+.btn_der:active,
+.btn_izq:active {
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Cambiar la sombra al hacer clic */
+  transform: translateY(1px); /* Bajar ligeramente el botón al hacer clic */
+}
+

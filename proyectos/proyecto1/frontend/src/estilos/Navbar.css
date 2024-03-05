@@ -1,32 +1,31 @@
 /* Navbar.css */
 .navbar {
-    background-color: #333;
-    color: white;
-    padding: 20px;
-    position:fixed;
-    top: 0;
-    width: 100%;
-  }
-  
-  .navbar-list {
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    justify-content:center; /* Alinea los elementos a la derecha */
-  }
-  
-  .navbar-list li {
-    margin-left: 20px;
-  }
-  
-  .navbar-list a {
-    color: white;
-    text-decoration: none;
-    font-weight: bold;
-  }
-  
-  .navbar-list a:hover {
-    border-bottom: 2px solid white;
-  }
-  
+  background-color: #333;
+  color: white;
+  width: 100%;
+  height: 100%;
+
+}
+
+.navbar-list {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  justify-content: center;
+}
+
+.navbar-list li {
+  margin-left: 20px;
+  margin-top: 25px;
+}
+
+.navbar-list a {
+  color: white;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+.navbar-list a:hover {
+  border-bottom: 2px solid #61dafb;
+}

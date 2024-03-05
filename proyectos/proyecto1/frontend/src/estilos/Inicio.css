@@ -1,0 +1,15 @@
+
+.ContenedorTitutlo {
+    text-align: center;
+    background-color: #404a59;
+    height: 827px; /* Añadido para centrar verticalmente */
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Centra verticalmente */
+    color: #61dafb;
+  }
+  
+ 
+  
+  
