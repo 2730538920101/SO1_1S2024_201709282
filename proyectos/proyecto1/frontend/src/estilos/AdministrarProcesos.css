@@ -1,37 +1,75 @@
 
-  .contenedor_principal {
-    height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Alinea el contenido hacia arriba */
-    align-items: center;
-    background-color: #404a59;
-    padding: 20px;
-    margin-top: 60px; /* Ajusta según la altura de tu Navbar */
-  }
-  
-  .contenedor_principal h1 {
-    font-size: 24px;
-    color: #61dafb;
-    text-align: center;
-    margin-top: 20px; /* Espacio desde la parte superior */
-  }
-  
-  /* Añadido para el lienzo */
-  .lienzo {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    border: 1px solid #474646;
-    margin-top: 20px;
-  }
-  
-  .contenedor_arbol{
-    display: flex;
-    flex: 1;
-    width: 100%;
-    height: 100%;
-    background-color: bisque;
-  }
+.contenedor_principal {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start; /* Alinea el contenido hacia arriba */
+  align-items: center;
+  background-color: #404a59;
+  padding: 20px;
+  margin-top: 60px; /* Ajusta según la altura de tu Navbar */
+}
+
+.contenedor_principal h1 {
+  font-size: 24px;
+  color: #61dafb;
+  text-align: center;
+  margin-top: 20px; /* Espacio desde la parte superior */
+}
+
+/* Añadido para el lienzo */
+.lienzo {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: 1px solid #474646;
+  margin-top: 20px;
+}
+
+.contenedor_arbol{
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100%;
+  background-color: rgb(196, 222, 255);
+}
+.contenedor_select {
+  margin-top: 20px;
+  margin-left: 10%;
+  display: flex;
+  flex-direction: line;
+  height: 10%;
+  width: 80%;
+}
+.contenedor_select h2{
+  color:rgb(44, 70, 73);
+}
+
+.select_procesos {
+  width: 200px;
+  margin-left: 5%;
+  font-size: 16px;
+  height: 50px;
+  background-color: #64bd73;
+  border-color: aliceblue;
+  border: 3px;
+}
+
+/* Seudoelemento ::after para agregar líneas entre opciones */
+.select_procesos option::after {
+content: "";
+display: block;
+width: 100%;
+height: 1px;
+background-color: #000; /* Puedes ajustar el color de la línea según tu diseño */
+position: absolute;
+bottom: 0;
+left: 0;
+}
+
+.contenedor_grafica_arbol{
+height: 100%;
+width: 100%;
+}

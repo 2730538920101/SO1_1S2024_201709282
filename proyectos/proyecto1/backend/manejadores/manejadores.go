@@ -171,6 +171,47 @@ func HandleRAMDatosLista(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(respuestaRAM)
 }
 
+// HandleListaPIDProcesos retorna la lista de PID de procesos al endpoint correspondiente
+func HandleListaPIDProcesos(w http.ResponseWriter, r *http.Request) {
+	// Obtener los datos de CPU desde el canal
+	datosCPU := <-cpuDataChan
+
+	// Deserializar los datos JSON en una estructura models.InformacionProcesos
+	var informacionProcesos models.InformacionProcesos
+	if err := json.Unmarshal([]byte(datosCPU), &informacionProcesos); err != nil {
+		http.Error(w, fmt.Sprintf("error al deserializar datos de CPU: %s", err), http.StatusInternalServerError)
+		return
+	}
+
+	// Utilizar un mapa para verificar duplicados
+	pidMap := make(map[int]bool)
+	var listaPID []int
+
+	// Obtener la lista de PID de procesos
+	for _, proceso := range informacionProcesos.Procesos {
+		// Verificar si el PID ya existe en el mapa antes de agregarlo
+		if _, exists := pidMap[proceso.PID]; !exists {
+			pidMap[proceso.PID] = true
+			listaPID = append(listaPID, proceso.PID)
+		}
+	}
+
+	// Crear un mapa para la respuesta
+	respuesta := map[string]interface{}{
+		"pids": listaPID,
+	}
+
+	// Convertir la respuesta a formato JSON
+	jsonData, err := json.Marshal(respuesta)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("error al serializar lista de PID: %s", err), http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonData)
+}
+
 // NewRouter devuelve un enrutador configurado con manejadores
 func NewRouter() *mux.Router {
 	router := mux.NewRouter()
@@ -186,6 +227,9 @@ func NewRouter() *mux.Router {
 
 	// Endpoint para historico de la RAM
 	router.HandleFunc("/historico_ram", HandleRAMDatosLista).Methods("GET")
+
+	// Endpoint para obtener la lista de PID de procesos
+	router.HandleFunc("/lista_pid_procesos", HandleListaPIDProcesos).Methods("GET")
 
 	return router
 }
