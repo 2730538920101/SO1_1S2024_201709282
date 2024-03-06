@@ -44,64 +44,68 @@ const GraficasHistorico = () => {
 
   useEffect(() => {
     // Configuración inicial de la gráfica de CPU
-    const cpuChartConfig = {
-      labels: datosCpu.lista_cpu.map((data) => data.tiempo_registro),
-      datasets: [
-        {
-          label: 'Porcentaje CPU',
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: 'rgba(75,192,192,0.4)',
-          borderColor: 'rgba(75,192,192,1)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
-          pointBorderColor: 'rgba(75,192,192,1)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: 'rgba(75,192,192,1)',
-          pointHoverBorderColor: 'rgba(220,220,220,1)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: datosCpu.lista_cpu.map((data) => data.porcentaje),
-        },
-      ],
-    };
-    setCpuChart(cpuChartConfig);
+    if (datosCpu.lista_cpu && datosCpu.lista_cpu.length > 0) {
+      const cpuChartConfig = {
+        labels: datosCpu.lista_cpu.map((data) => data.tiempo_registro),
+        datasets: [
+          {
+            label: 'Porcentaje CPU',
+            fill: false,
+            lineTension: 0.1,
+            backgroundColor: 'rgba(75,192,192,0.4)',
+            borderColor: 'rgba(75,192,192,1)',
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: 'rgba(75,192,192,1)',
+            pointBackgroundColor: '#fff',
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: 'rgba(75,192,192,1)',
+            pointHoverBorderColor: 'rgba(220,220,220,1)',
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: datosCpu.lista_cpu.map((data) => data.porcentaje),
+          },
+        ],
+      };
+      setCpuChart(cpuChartConfig);
+    }
   }, [datosCpu]);
-
+  
   useEffect(() => {
     // Configuración inicial de la gráfica de RAM
-    const ramChartConfig = {
-      labels: datosRam.lista_ram.map((data) => data.tiempo_registro),
-      datasets: [
-        {
-          label: 'Porcentaje RAM',
-          fill: false,
-          lineTension: 0.1,
-          backgroundColor: 'rgba(255,99,132,0.4)',
-          borderColor: 'rgba(255,99,132,1)',
-          borderCapStyle: 'butt',
-          borderDash: [],
-          borderDashOffset: 0.0,
-          borderJoinStyle: 'miter',
-          pointBorderColor: 'rgba(255,99,132,1)',
-          pointBackgroundColor: '#fff',
-          pointBorderWidth: 1,
-          pointHoverRadius: 5,
-          pointHoverBackgroundColor: 'rgba(255,99,132,1)',
-          pointHoverBorderColor: 'rgba(220,220,220,1)',
-          pointHoverBorderWidth: 2,
-          pointRadius: 1,
-          pointHitRadius: 10,
-          data: datosRam.lista_ram.map((data) => data.porcentaje_utilizado),
-        },
-      ],
-    };
-    setRamChart(ramChartConfig);
+    if (datosRam.lista_ram && datosRam.lista_ram.length > 0) {
+      const ramChartConfig = {
+        labels: datosRam.lista_ram.map((data) => data.tiempo_registro),
+        datasets: [
+          {
+            label: 'Porcentaje RAM',
+            fill: false,
+            lineTension: 0.1,
+            backgroundColor: 'rgba(255,99,132,0.4)',
+            borderColor: 'rgba(255,99,132,1)',
+            borderCapStyle: 'butt',
+            borderDash: [],
+            borderDashOffset: 0.0,
+            borderJoinStyle: 'miter',
+            pointBorderColor: 'rgba(255,99,132,1)',
+            pointBackgroundColor: '#fff',
+            pointBorderWidth: 1,
+            pointHoverRadius: 5,
+            pointHoverBackgroundColor: 'rgba(255,99,132,1)',
+            pointHoverBorderColor: 'rgba(220,220,220,1)',
+            pointHoverBorderWidth: 2,
+            pointRadius: 1,
+            pointHitRadius: 10,
+            data: datosRam.lista_ram.map((data) => data.porcentaje_utilizado),
+          },
+        ],
+      };
+      setRamChart(ramChartConfig);
+    }
   }, [datosRam]);
 
   return (

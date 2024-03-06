@@ -55,6 +55,7 @@
     background-color: #64bd73;
     border-color: aliceblue;
     border: 3px;
+    color:white;
   }
 
   /* Seudoelemento ::after para agregar líneas entre opciones */
@@ -72,4 +73,27 @@
 .contenedor_grafica_arbol{
   height: 100%;
   width: 100%;
+
+}
+
+.boton_descarga{
+  width: 200px;
+  margin-left: 5%;
+  font-size: 16px;
+  height: 50px;
+  background-color: #c2da3e;
+  border-color: aliceblue;
+  border: 3px;
+  color:white;
+}
+
+.boton_descarga:hover{
+  width: 200px;
+  margin-left: 5%;
+  font-size: 16px;
+  height: 50px;
+  background-color: aliceblue;
+  border-color: #c2da3e;
+  color: #c2da3e;
+  border: 3px;
 }

@@ -1,8 +1,50 @@
 import React, { useState, useEffect } from 'react';
 import '../estilos/ArbolProcesos.css';
+import { saveAs } from 'file-saver';
+import Viz from 'viz.js';
+import { Module, render } from 'viz.js/full.render.js';
+import Graphviz from 'graphviz-react';
 
 const ArbolProcesos = () => {
   const [procesos, setProcesos] = useState([]);
+  const [arbolDot, setArbolDot] = useState('');
+  const [arbolSVG, setArbolSVG] = useState('');
+
+  const handleSelectChange = async (event) => {
+    const selectedPid = event.target.value;
+
+    try {
+      const response = await fetch(`http://localhost:5000/generarArbol/${selectedPid}`);
+      const arbolDotResponse = await response.text();
+
+      // Verifica si el árbol DOT se obtuvo exitosamente
+      if (response.ok) {
+        // Actualiza el estado con el árbol DOT
+        setArbolDot(arbolDotResponse);
+
+        // Convierte el DOT a SVG usando Viz.js
+        const viz = new Viz({ Module, render });
+        const svg = await viz.renderString(arbolDotResponse, { format: 'svg' });
+        setArbolSVG(svg);
+
+        console.log('Árbol DOT obtenido exitosamente:', arbolDotResponse);
+      } else {
+        console.error('Error al obtener el árbol DOT:', arbolDotResponse);
+      }
+    } catch (error) {
+      console.error('Error al obtener el árbol DOT:', error);
+    }
+  };
+
+  const handleDownload = () => {
+    // Verifica si hay un árbol SVG para descargar
+    if (arbolSVG) {
+      const blob = new Blob([arbolSVG], { type: 'image/svg+xml' });
+      saveAs(blob, 'arbol_proceso.svg');
+    } else {
+      console.error('No hay árbol SVG para descargar');
+    }
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -32,15 +74,30 @@ const ArbolProcesos = () => {
         <div className='contenedor_arbol'>
           <div className='contenedor_select'>
             <h2> SELECCIONA EL PID DEL PROCESO PARA GENERAR SU ARBOL </h2>
-            <select className='select_procesos'>
+            <select className='select_procesos' onChange={handleSelectChange}>
               {procesos.map((pid) => (
                 <option key={pid} value={pid}>
                   Proceso {pid}
                 </option>
               ))}
             </select>
+            {/* Agrega el botón de descarga aquí */}
+            <button className='boton_descarga' onClick={handleDownload}>Descargar SVG</button>
           </div>
-          <div className='contenedor_grafica_arbol'></div>
+          <div className='contenedor_grafica_arbol' style={{ textAlign: 'center' }}>
+            {/* Renderiza el árbol DOT con Graphviz */}
+            {arbolDot && (
+              <Graphviz
+                dot={arbolDot}
+                options={{
+                  zoom: true, // Permite hacer zoom
+                  fit: true, // Hace que el gráfico se ajuste al contenedor
+                  center: true, // Centra el gráfico en el contenedor
+                }}
+                style={{ width: '100%', height: '100%' }} // Ocupa todo el espacio disponible
+              />
+            )}
+          </div>
         </div>
       </div>
     </div>

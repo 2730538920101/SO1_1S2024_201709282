@@ -23,6 +23,64 @@ const (
 var cpuDataChan = make(chan string) // Canal para datos de CPU
 var ramDataChan = make(chan string) // Canal para datos de RAM
 
+// GenerarArbolDOT genera el árbol en formato DOT para el PID dado
+func GenerarArbolDOT(pid string) (string, error) {
+	// Obtén los datos de CPU desde el canal
+	datosCPU := <-cpuDataChan
+
+	// Deserializa los datos JSON en una estructura models.InformacionProcesos
+	var informacionProcesos models.InformacionProcesos
+	if err := json.Unmarshal([]byte(datosCPU), &informacionProcesos); err != nil {
+		return "", fmt.Errorf("error al deserializar datos de CPU: %w", err)
+	}
+
+	// Busca el proceso con el PID específico en la lista de procesos
+	var procesoSeleccionado *models.ProcesoPadre
+	for _, proceso := range informacionProcesos.Procesos {
+		if fmt.Sprintf("%d", proceso.PID) == pid {
+			procesoSeleccionado = &proceso
+			break
+		}
+	}
+
+	// Si no se encontró el proceso, devuelve un mensaje indicando que no se encontró
+	if procesoSeleccionado == nil {
+		return "", fmt.Errorf("proceso con PID %s no encontrado", pid)
+	}
+
+	// Genera el árbol DOT utilizando la información del proceso seleccionado
+	arbolDot := generateDOTTree(procesoSeleccionado)
+
+	// Agrega el encabezado 'digraph' al árbol DOT
+	arbolDot = "digraph G {\n" + arbolDot + "}\n"
+
+	return arbolDot, nil
+}
+
+// Función auxiliar para generar el árbol DOT recursivamente
+func generateDOTTree(proceso *models.ProcesoPadre) string {
+	// Estructura básica del nodo para el proceso actual
+	nodeString := fmt.Sprintf("%d [label=\"%s\"];\n", proceso.PID, proceso.Nombre)
+
+	// Agrega conexiones con los procesos hijos
+	for _, hijo := range proceso.Hijos {
+		nodeString += generateDOTTreeHijo(hijo)
+		nodeString += fmt.Sprintf("%d -> %d;\n", proceso.PID, hijo.PIDHijo)
+	}
+
+	return nodeString
+}
+
+// Función auxiliar para generar el árbol DOT para un proceso hijo recursivamente
+func generateDOTTreeHijo(hijo models.ProcesoHijo) string {
+	// Estructura básica del nodo para el proceso hijo actual
+	nodeString := fmt.Sprintf("%d [label=\"%s\"];\n", hijo.PIDHijo, hijo.NombreHijo)
+
+	// No se agregan conexiones a los procesos hijos, ya que son hojas en el árbol
+
+	return nodeString
+}
+
 // ActualizarDatosCPU obtiene datos de CPU desde el archivo en /proc y los envía al canal
 func ActualizarDatosCPU() {
 	for {
@@ -212,6 +270,27 @@ func HandleListaPIDProcesos(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 }
 
+func HandleGenerarArbol(w http.ResponseWriter, r *http.Request) {
+	// Obtén el PID del parámetro de la URL
+	vars := mux.Vars(r)
+	pid, ok := vars["pid"]
+	if !ok {
+		http.Error(w, "Falta el parámetro 'pid' en la URL", http.StatusBadRequest)
+		return
+	}
+
+	// Llama a una función para generar el árbol en formato DOT usando el PID
+	arbolDot, err := GenerarArbolDOT(pid)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error al generar el árbol DOT: %s", err), http.StatusInternalServerError)
+		return
+	}
+
+	// Devuelve el árbol en formato DOT como respuesta
+	w.Header().Set("Content-Type", "text/plain")
+	fmt.Fprint(w, arbolDot)
+}
+
 // NewRouter devuelve un enrutador configurado con manejadores
 func NewRouter() *mux.Router {
 	router := mux.NewRouter()
@@ -230,6 +309,9 @@ func NewRouter() *mux.Router {
 
 	// Endpoint para obtener la lista de PID de procesos
 	router.HandleFunc("/lista_pid_procesos", HandleListaPIDProcesos).Methods("GET")
+
+	// Endpoint para obtener el arbol del proceso seleccionado
+	router.HandleFunc("/generarArbol/{pid}", HandleGenerarArbol).Methods("GET")
 
 	return router
 }
