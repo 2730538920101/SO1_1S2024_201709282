@@ -1,19 +1,22 @@
 package manejadores
 
 import (
+	"backend/db"
+	"backend/models"
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os/exec"
+	"strconv"
 	"strings"
 	"time"
 
-	"backend/db"
-	"backend/models"
-
 	"github.com/gorilla/mux"
 )
+
+var process *exec.Cmd
 
 const (
 	cpuFilePath = "/proc/cpu_so1_1s2024" // Ruta al archivo de datos de CPU
@@ -291,6 +294,141 @@ func HandleGenerarArbol(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, arbolDot)
 }
 
+func HandleStartProcess(w http.ResponseWriter, r *http.Request) {
+	// Crear un nuevo proceso con un comando de espera
+	cmd := exec.Command("sleep", "infinity")
+	err := cmd.Start()
+	if err != nil {
+		fmt.Print(err)
+		http.Error(w, "Error al iniciar el proceso", http.StatusInternalServerError)
+		return
+	}
+
+	// Obtener el comando con PID
+	process = cmd
+
+	// Insertar transacciones en la tabla ESTADO
+	pid := process.Process.Pid
+
+	err = db.InsertEstado(pid, "NEW")
+	if err != nil {
+		log.Printf("Error al insertar estado 'NEW' en la base de datos: %s", err)
+		http.Error(w, "Error interno del servidor", http.StatusInternalServerError)
+		return
+	}
+
+	err = db.InsertEstado(pid, "READY")
+	if err != nil {
+		log.Printf("Error al insertar estado 'READY' en la base de datos: %s", err)
+		http.Error(w, "Error interno del servidor", http.StatusInternalServerError)
+		return
+	}
+
+	err = db.InsertEstado(pid, "RUNNING")
+	if err != nil {
+		log.Printf("Error al insertar estado 'RUNNING' en la base de datos: %s", err)
+		http.Error(w, "Error interno del servidor", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintf(w, "Proceso iniciado con PID: %d y estado en espera", process.Process.Pid)
+}
+
+func HandleStopProcess(w http.ResponseWriter, r *http.Request) {
+	pidStr := r.URL.Query().Get("pid")
+	if pidStr == "" {
+		http.Error(w, "Se requiere el parámetro 'pid'", http.StatusBadRequest)
+		return
+	}
+
+	pid, err := strconv.Atoi(pidStr)
+	if err != nil {
+		http.Error(w, "El parámetro 'pid' debe ser un número entero", http.StatusBadRequest)
+		return
+	}
+
+	// Enviar señal SIGSTOP al proceso con el PID proporcionado
+	cmd := exec.Command("kill", "-SIGSTOP", strconv.Itoa(pid))
+	err = cmd.Run()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error al detener el proceso con PID %d", pid), http.StatusInternalServerError)
+		return
+	}
+
+	// Insertar transacción en la tabla ESTADO
+	err = db.InsertEstado(pid, "READY")
+	if err != nil {
+		log.Printf("Error al insertar estado 'READY' en la base de datos: %s", err)
+		http.Error(w, "Error interno del servidor", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintf(w, "Proceso con PID %d detenido", pid)
+}
+
+func HandleReadyProcess(w http.ResponseWriter, r *http.Request) {
+	pidStr := r.URL.Query().Get("pid")
+	if pidStr == "" {
+		http.Error(w, "Se requiere el parámetro 'pid'", http.StatusBadRequest)
+		return
+	}
+
+	pid, err := strconv.Atoi(pidStr)
+	if err != nil {
+		http.Error(w, "El parámetro 'pid' debe ser un número entero", http.StatusBadRequest)
+		return
+	}
+
+	// Enviar señal SIGCONT al proceso con el PID proporcionado
+	cmd := exec.Command("kill", "-SIGCONT", strconv.Itoa(pid))
+	err = cmd.Run()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error al reanudar el proceso con PID %d", pid), http.StatusInternalServerError)
+		return
+	}
+	// Insertar transacción en la tabla ESTADO
+	err = db.InsertEstado(pid, "RUNNING")
+	if err != nil {
+		log.Printf("Error al insertar estado 'RUNNING' en la base de datos: %s", err)
+		http.Error(w, "Error interno del servidor", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintf(w, "Proceso con PID %d reanudado", pid)
+}
+
+func HandleKillProcess(w http.ResponseWriter, r *http.Request) {
+	pidStr := r.URL.Query().Get("pid")
+	if pidStr == "" {
+		http.Error(w, "Se requiere el parámetro 'pid'", http.StatusBadRequest)
+		return
+	}
+
+	pid, err := strconv.Atoi(pidStr)
+	if err != nil {
+		http.Error(w, "El parámetro 'pid' debe ser un número entero", http.StatusBadRequest)
+		return
+	}
+
+	// Enviar señal SIGCONT al proceso con el PID proporcionado
+	cmd := exec.Command("kill", "-9", strconv.Itoa(pid))
+	err = cmd.Run()
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error al intentar terminar el proceso con PID %d", pid), http.StatusInternalServerError)
+		return
+	}
+
+	// Insertar transacción en la tabla ESTADO
+	err = db.InsertEstado(pid, "TERMINATED")
+	if err != nil {
+		log.Printf("Error al insertar estado 'TERMINATED' en la base de datos: %s", err)
+		http.Error(w, "Error interno del servidor", http.StatusInternalServerError)
+		return
+	}
+
+	fmt.Fprintf(w, "Proceso con PID %d ha terminado", pid)
+}
+
 // NewRouter devuelve un enrutador configurado con manejadores
 func NewRouter() *mux.Router {
 	router := mux.NewRouter()
@@ -312,6 +450,18 @@ func NewRouter() *mux.Router {
 
 	// Endpoint para obtener el arbol del proceso seleccionado
 	router.HandleFunc("/generarArbol/{pid}", HandleGenerarArbol).Methods("GET")
+
+	// Endpoint para iniciar un nuevo proceso
+	router.HandleFunc("/start", HandleStartProcess).Methods("POST")
+
+	// Endpoint para parar un proceso creado
+	router.HandleFunc("/stop", HandleStopProcess).Methods("POST")
+
+	// Endpoint para poner un proceso en estado Ready
+	router.HandleFunc("/ready", HandleReadyProcess).Methods("POST")
+
+	// Endpoint para poner un proceso en estrado terminated
+	router.HandleFunc("/kill", HandleKillProcess).Methods("POST")
 
 	return router
 }

@@ -129,3 +129,9 @@ func ObtenerListaRAMUltimos10Minutos() ([]models.RAMData, error) {
 
 	return listaRAM, nil
 }
+
+// InsertEstado inserta un registro en la tabla ESTADO
+func InsertEstado(idProceso int, nombreEstado string) error {
+	_, err := db.Exec("INSERT INTO ESTADO (ID_PROCESO, NOMBRE) VALUES (?, ?)", idProceso, nombreEstado)
+	return err
+}
