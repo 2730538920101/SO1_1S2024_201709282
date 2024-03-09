@@ -1,19 +1,38 @@
 import React, { useState } from 'react';
+import Graphviz from 'graphviz-react';
 import '../estilos/AdministrarProcesos.css';
 
 const AdministrarProcesos = () => {
   const [pidProceso, setPidProceso] = useState(null);
+  const [buttonsDisabled, setButtonsDisabled] = useState(false);
+  const [graphData, setGraphData] = useState({
+    nodes: [{ id: 0, label: 'NEW', color: 'green' }],
+    edges: [],
+  });
+
+  const updateGraphData = (label, color) => {
+    const newNodeId = graphData.nodes.length;
+    const newGraphData = {
+      nodes: [
+        ...graphData.nodes,
+        { id: newNodeId, label, color },
+      ],
+      edges: [...graphData.edges, { from: newNodeId - 1, to: newNodeId, color }],
+    };
+
+    setGraphData(newGraphData);
+  };
 
   const handleStartProcess = async () => {
     try {
       const response = await fetch('http://localhost:5000/start', { method: 'POST' });
       const data = await response.text();
-
-      // Extraer el PID del texto de la respuesta (puede variar según la respuesta real)
+      console.log(data);
       const pid = parseInt(data.split(' ')[4]);
-
-      // Actualizar el estado con el PID del proceso creado
       setPidProceso(pid);
+
+      updateGraphData('READY', 'blue');
+      updateGraphData('RUNNING', 'green');
     } catch (error) {
       console.error('Error al iniciar el proceso:', error);
     }
@@ -22,9 +41,10 @@ const AdministrarProcesos = () => {
   const handleStopProcess = async () => {
     if (pidProceso !== null) {
       try {
-        const response = await fetch(`http://localhost:5000/stop?pid=${pidProceso}`, { method: 'POST' });
-        const data = await response.text();
-        console.log(data);
+        await fetch(`http://localhost:5000/stop?pid=${pidProceso}`, { method: 'POST' });
+        console.log('Process stopped');
+
+        updateGraphData('READY', 'blue');
       } catch (error) {
         console.error('Error al detener el proceso:', error);
       }
@@ -36,9 +56,10 @@ const AdministrarProcesos = () => {
   const handleReadyProcess = async () => {
     if (pidProceso !== null) {
       try {
-        const response = await fetch(`http://localhost:5000/ready?pid=${pidProceso}`, { method: 'POST' });
-        const data = await response.text();
-        console.log(data);
+        await fetch(`http://localhost:5000/ready?pid=${pidProceso}`, { method: 'POST' });
+        console.log('Process set to READY');
+
+        updateGraphData('RUNNING', 'green');
       } catch (error) {
         console.error('Error al poner el proceso en estado Ready:', error);
       }
@@ -50,15 +71,48 @@ const AdministrarProcesos = () => {
   const handleKillProcess = async () => {
     if (pidProceso !== null) {
       try {
-        const response = await fetch(`http://localhost:5000/kill?pid=${pidProceso}`, { method: 'POST' });
-        const data = await response.text();
-        console.log(data);
+        await fetch(`http://localhost:5000/kill?pid=${pidProceso}`, { method: 'POST' });
+        console.log('Process killed');
+
+        updateGraphData('TERMINATED', 'red');
+        // No establecer setPidProceso(null) aquí para que la etiqueta con el PID no desaparezca
+
+        setButtonsDisabled(true);
       } catch (error) {
         console.error('Error al terminar el proceso:', error);
       }
     } else {
       console.error('No hay proceso para terminar');
     }
+  };
+
+  const handleReset = () => {
+    resetGraph();
+    setButtonsDisabled(false);
+    // Establecer setPidProceso(null) aquí para que la etiqueta con el PID desaparezca al presionar reset
+    setPidProceso(null);
+  };
+
+  const handleNewProcess = () => {
+    resetGraph();
+    handleStartProcess();
+  };
+
+  const resetGraph = () => {
+    setGraphData({
+      nodes: [{ id: 0, label: 'NEW', color: 'green' }],
+      edges: [],
+    });
+    // No establecer setPidProceso(null) aquí para que la etiqueta con el PID no desaparezca
+  };
+
+  const generateDot = (graphData) => {
+    const { nodes, edges } = graphData;
+    const dot = `digraph G {
+      ${nodes.map((node) => `${node.id} [label="${node.label}", color="${node.color}"];`).join('\n')}
+      ${edges.map((edge) => `${edge.from} -> ${edge.to} [color="${edge.color}"];`).join('\n')}
+    }`;
+    return dot;
   };
 
   return (
@@ -68,22 +122,25 @@ const AdministrarProcesos = () => {
         <div className='contenedor_arbol'>
           <h2> ESTADOS DE LOS PROCESOS </h2>
           <div className='contenedor botones'>
-            <button className='btn_new' onClick={handleStartProcess}>
+            <button className='btn_new' onClick={handleNewProcess} disabled={buttonsDisabled}>
               NEW
             </button>
-            <button className='btn_stop' onClick={handleStopProcess}>
+            <button className='btn_stop' onClick={handleStopProcess} disabled={buttonsDisabled}>
               STOP
             </button>
-            <button className='btn_ready' onClick={handleReadyProcess}>
+            <button className='btn_ready' onClick={handleReadyProcess} disabled={buttonsDisabled}>
               READY
             </button>
-            <button className='btn_kill' onClick={handleKillProcess}>
+            <button className='btn_kill' onClick={handleKillProcess} disabled={buttonsDisabled}>
               KILL
             </button>
+            <button className='btn_reset' onClick={handleReset}>
+              RESET
+            </button>
             {pidProceso !== null && <h1 style={{ color: 'black', fontSize: '20px' }}>PID del proceso: {pidProceso}</h1>}
-          </div>  
+          </div>
           <div className='contenedor_grafica_arbol'>
-            
+            <Graphviz className='grafo' dot={generateDot(graphData)} options={{ width: 600, height: 400 }} />
           </div>
         </div>
       </div>

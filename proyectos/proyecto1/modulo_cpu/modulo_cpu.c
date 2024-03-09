@@ -15,7 +15,8 @@
 
 struct task_struct *cpu; // Estructura que almacena info del cpu
 unsigned long rss;
-// Declaración de la variable global para almacenar el valor de jiffies al inicio
+
+
 
 MODULE_LICENSE("GPL");
 MODULE_DESCRIPTION("Módulo CPU - Laboratorio Sistemas Operativos 1");
@@ -25,16 +26,31 @@ static void imprimir_hijos(struct seq_file *archivo, struct list_head *hijos);
 
 
 static int mostrar_informacion_cpu(struct seq_file *archivo, void *v) {
-    seq_printf(archivo, "{\n");
-    unsigned long total_cpu_time = jiffies_to_msecs(get_jiffies_64());
-    unsigned long total_usage = 0;
+    uint64_t total_cpu_time_ns;
+    uint64_t total_usage_ns;
+    unsigned long cpu_porcentaje;
+
+    total_cpu_time_ns = 0; // Inicializa a cero
+    total_usage_ns = 0;    // Inicializa a cero
+    cpu_porcentaje=0;
 
     for_each_process(cpu) {
-        unsigned long cpu_time = jiffies_to_msecs(cpu->utime + cpu->stime);
-        total_usage += cpu_time;
+    uint64_t cpu_time_ns;
+    cpu_time_ns = cpu->utime + cpu->stime;
+    total_usage_ns += cpu_time_ns;
     }
 
-    seq_printf(archivo, "  \"porcentaje_utilizacion_cpu\": %ld,\n", (total_usage * 100) / total_cpu_time);
+    total_cpu_time_ns = ktime_to_ns(ktime_get());  // Obtén el tiempo total de CPU
+
+    if (total_cpu_time_ns > 0) {
+        cpu_porcentaje = (total_usage_ns * 100) / total_cpu_time_ns;
+    } else {
+        cpu_porcentaje = 0;  // Evitar división por cero
+    }
+
+    seq_printf(archivo, "{\n");
+    
+    seq_printf(archivo, "  \"porcentaje_utilizacion_cpu\": %ld,\n", cpu_porcentaje);
     seq_printf(archivo, "  \"procesos\": [\n");
 
     int first_process = 1;

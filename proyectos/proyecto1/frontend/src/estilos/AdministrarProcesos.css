@@ -141,3 +141,30 @@ width: 100%;
   color:#dd0f0f;
 }
 
+.grafo svg{
+  width: 850px;
+  height: 600px;
+  margin-top: 5%;
+  margin-left: 25%;
+}
+
+.btn_reset{
+  margin-left: 10%;
+  height: 75px;
+  width: 150px;
+  font-size: x-large;
+  border-radius: 20%;
+  border-color:rgb(0, 0, 0);
+  background-color: rgb(48, 228, 32);
+}
+
+.btn_reset:hover{
+  margin-left: 10%;
+  height: 75px;
+  width: 150px;
+  font-size: x-large;
+  border-radius: 20%;
+  border-color: rgb(48, 228, 32);
+  background-color: #c8cdd8;
+  color:  rgb(48, 228, 32);
+}
