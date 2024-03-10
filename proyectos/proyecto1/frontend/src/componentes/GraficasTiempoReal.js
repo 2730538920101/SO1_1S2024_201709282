@@ -3,6 +3,7 @@ import Chart from 'chart.js/auto';
 import '../estilos/GraficasTiempoReal.css';
 
 const GraficasTiempoReal = () => {
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
   const [datosCpu, setDatosCpu] = useState(null);
   const [datosRam, setDatosRam] = useState(null);
   const cpuChartRef = useRef(null);
@@ -26,15 +27,16 @@ const GraficasTiempoReal = () => {
 
   const actualizarDatos = async () => {
     console.log('Actualizando datos...');
+    console.log('URL del servidor:', serverUrl);
     // Obtener datos de CPU
-    const datosCpu = await obtenerDatos('http://localhost:5000/cpu');
+    const datosCpu = await obtenerDatos(`${serverUrl}/cpu`);
     if (datosCpu) {
       console.log('Datos de CPU:', datosCpu);
       setDatosCpu(datosCpu);
     }
 
     // Obtener datos de RAM
-    const datosRam = await obtenerDatos('http://localhost:5000/ram');
+    const datosRam = await obtenerDatos(`${serverUrl}/ram`);
     if (datosRam) {
       console.log('Datos de RAM:', datosRam);
       setDatosRam(datosRam);

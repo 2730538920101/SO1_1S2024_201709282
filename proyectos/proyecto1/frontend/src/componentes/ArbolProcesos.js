@@ -6,6 +6,7 @@ import { Module, render } from 'viz.js/full.render.js';
 import Graphviz from 'graphviz-react';
 
 const ArbolProcesos = () => {
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
   const [procesos, setProcesos] = useState([]);
   const [arbolDot, setArbolDot] = useState('');
   const [arbolSVG, setArbolSVG] = useState('');
@@ -14,7 +15,7 @@ const ArbolProcesos = () => {
     const selectedPid = event.target.value;
 
     try {
-      const response = await fetch(`http://localhost:5000/generarArbol/${selectedPid}`);
+      const response = await fetch(`${serverUrl}/generarArbol/${selectedPid}`);
       const arbolDotResponse = await response.text();
 
       // Verifica si el árbol DOT se obtuvo exitosamente
@@ -49,7 +50,7 @@ const ArbolProcesos = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('http://localhost:5000/lista_pid_procesos');
+        const response = await fetch(`${serverUrl}/lista_pid_procesos`);
         const data = await response.json();
         setProcesos(data.pids);
 

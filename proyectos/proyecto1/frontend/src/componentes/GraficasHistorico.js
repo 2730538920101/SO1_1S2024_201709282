@@ -3,6 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 
 const GraficasHistorico = () => {
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
   const [datosCpu, setDatosCpu] = useState({ lista_cpu: [] });
   const [datosRam, setDatosRam] = useState({ lista_ram: [] });
   const [cpuChart, setCpuChart] = useState(null);
@@ -10,7 +11,7 @@ const GraficasHistorico = () => {
 
   const obtenerDatosHistoricos = async (endpoint) => {
     try {
-      const response = await fetch(`http://localhost:5000/${endpoint}`);
+      const response = await fetch(`${serverUrl}/${endpoint}`);
       if (!response.ok) {
         throw new Error(`Error al obtener datos históricos (${response.status}): ${await response.text()}`);
       }

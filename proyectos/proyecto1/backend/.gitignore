@@ -3,7 +3,7 @@
 /pkg/
 
 # Archivos de configuración
-/.env
+.env
 
 # Archivos de compilación y log
 *.log

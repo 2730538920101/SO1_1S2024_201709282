@@ -1,0 +1,18 @@
+# Variables de entorno para la base de datos
+DB_USERNAME=
+DB_PASSWORD=
+DB_HOST=
+DB_PORT=
+DB_NAME=
+
+# Variables de entorno para el servidor backend
+SERVER_PORT=
+
+# Variable de entorno para el servidor API del frontend
+REACT_APP_SERVER_URL=
+
+# Variables de entorno para el contenedor de base de datos
+MYSQL_ROOT_PASSWORD=
+MYSQL_DATABASE=
+MYSQL_USER=
+MYSQL_PASSWORD=

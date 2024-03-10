@@ -3,6 +3,7 @@ import Graphviz from 'graphviz-react';
 import '../estilos/AdministrarProcesos.css';
 
 const AdministrarProcesos = () => {
+  const serverUrl = process.env.REACT_APP_SERVER_URL;
   const [pidProceso, setPidProceso] = useState(null);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const [graphData, setGraphData] = useState({
@@ -25,7 +26,7 @@ const AdministrarProcesos = () => {
 
   const handleStartProcess = async () => {
     try {
-      const response = await fetch('http://localhost:5000/start', { method: 'POST' });
+      const response = await fetch(`${serverUrl}/start`, { method: 'POST' });
       const data = await response.text();
       console.log(data);
       const pid = parseInt(data.split(' ')[4]);
@@ -41,7 +42,7 @@ const AdministrarProcesos = () => {
   const handleStopProcess = async () => {
     if (pidProceso !== null) {
       try {
-        await fetch(`http://localhost:5000/stop?pid=${pidProceso}`, { method: 'POST' });
+        await fetch(`${serverUrl}/stop?pid=${pidProceso}`, { method: 'POST' });
         console.log('Process stopped');
 
         updateGraphData('READY', 'blue');
@@ -56,7 +57,7 @@ const AdministrarProcesos = () => {
   const handleReadyProcess = async () => {
     if (pidProceso !== null) {
       try {
-        await fetch(`http://localhost:5000/ready?pid=${pidProceso}`, { method: 'POST' });
+        await fetch(`${serverUrl}/ready?pid=${pidProceso}`, { method: 'POST' });
         console.log('Process set to READY');
 
         updateGraphData('RUNNING', 'green');
@@ -71,7 +72,7 @@ const AdministrarProcesos = () => {
   const handleKillProcess = async () => {
     if (pidProceso !== null) {
       try {
-        await fetch(`http://localhost:5000/kill?pid=${pidProceso}`, { method: 'POST' });
+        await fetch(`${serverUrl}/kill?pid=${pidProceso}`, { method: 'POST' });
         console.log('Process killed');
 
         updateGraphData('TERMINATED', 'red');

@@ -2,11 +2,11 @@ version: '3'
 
 services:
 
-    # Servicio para la base de datos
+  # Servicio para la base de datos
   database:
     build:
       context: ./database
-    image: p1_database
+    image: carlosmz87/p1_database:latest
     container_name: p1_database_container
     volumes:
       - p1_data:/var/lib/mysql
@@ -14,12 +14,17 @@ services:
       - "3306:3306"
     networks:
       - p1_network
+    environment:
+      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+      - MYSQL_DATABASE=${MYSQL_DATABASE}
+      - MYSQL_USER=${MYSQL_USER}
+      - MYSQL_PASSWORD=${MYSQL_PASSWORD}
 
   # Servicio para el backend
   backend:
     build:
       context: ./backend
-    image: p1_backend
+    image: carlosmz87/p1_backend:latest
     container_name: p1_backend_container
     ports:
       - "5000:5000"
@@ -28,13 +33,25 @@ services:
     networks:
       - p1_network
     restart: always
-    
+    privileged: true
+    pid: host
+    volumes:
+      - /proc:/proc
+    environment:
+      - DB_USERNAME=${DB_USERNAME}
+      - DB_PASSWORD=${DB_PASSWORD}
+      - DB_HOST=${DB_HOST}
+      - DB_PORT=${DB_PORT}
+      - DB_NAME=${DB_NAME}
+      - SERVER_PORT=${SERVER_PORT}
+    links:
+      - database
 
   # Servicio para el frontend
   frontend:
     build:
       context: ./frontend
-    image: p1_frontend
+    image: carlosmz87/p1_frontend:latest
     container_name: p1_frontend_container
     ports:
       - "80:80"
@@ -42,6 +59,10 @@ services:
       - backend
     networks:
       - p1_network
+    environment:
+      - REACT_APP_SERVER_URL=${REACT_APP_SERVER_URL}
+    links:
+      - backend
 
 volumes:
   p1_data:
