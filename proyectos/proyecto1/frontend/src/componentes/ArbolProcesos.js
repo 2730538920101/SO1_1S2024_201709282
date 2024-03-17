@@ -1,12 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import '../estilos/ArbolProcesos.css';
+import '../ArbolProcesos.css';
 import { saveAs } from 'file-saver';
 import Viz from 'viz.js';
 import { Module, render } from 'viz.js/full.render.js';
 import Graphviz from 'graphviz-react';
 
 const ArbolProcesos = () => {
-  const serverUrl = process.env.REACT_APP_SERVER_URL;
+  let serverUrl;
+  if (process.env.NODE_ENV === 'development') {
+    serverUrl = process.env.REACT_APP_SERVER_URL; // Usa el valor del .env en local
+  } else {
+    // Usa el proxy en Docker
+    serverUrl = ''; // Puedes establecer la URL del proxy aquí, por ejemplo, '/api'
+  }
   const [procesos, setProcesos] = useState([]);
   const [arbolDot, setArbolDot] = useState('');
   const [arbolSVG, setArbolSVG] = useState('');

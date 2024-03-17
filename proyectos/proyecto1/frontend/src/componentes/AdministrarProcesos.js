@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
 import Graphviz from 'graphviz-react';
-import '../estilos/AdministrarProcesos.css';
+import '../AdministrarProcesos.css';
 
 const AdministrarProcesos = () => {
-  const serverUrl = process.env.REACT_APP_SERVER_URL;
+  let serverUrl;
+  if (process.env.NODE_ENV === 'development') {
+    serverUrl = process.env.REACT_APP_SERVER_URL; // Usa el valor del .env en local
+  } else {
+    // Usa el proxy en Docker
+    serverUrl = ''; // Puedes establecer la URL del proxy aquí, por ejemplo, '/api'
+  }
   const [pidProceso, setPidProceso] = useState(null);
   const [buttonsDisabled, setButtonsDisabled] = useState(false);
   const [graphData, setGraphData] = useState({

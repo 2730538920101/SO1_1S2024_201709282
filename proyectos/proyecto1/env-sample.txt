@@ -9,7 +9,7 @@ DB_NAME=
 SERVER_PORT=
 
 # Variable de entorno para el servidor API del frontend
-REACT_APP_SERVER_URL=
+NODE_ENV=
 
 # Variables de entorno para el contenedor de base de datos
 MYSQL_ROOT_PASSWORD=

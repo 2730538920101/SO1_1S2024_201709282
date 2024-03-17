@@ -20,7 +20,8 @@ func main() {
 	// Cargar variables de entorno desde el archivo .env
 	err := common.CargarVariablesEntorno()
 	if err != nil {
-		panic(err)
+		fmt.Println("Error cargando variables de entorno desde el archivo .env:", err)
+		fmt.Println("Obteniendo variables de entorno del sistema...")
 	}
 
 	// Inicializar la conexión a la base de datos

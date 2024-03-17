@@ -1,9 +1,15 @@
 import React, { useEffect, useState, useRef } from 'react';
 import Chart from 'chart.js/auto';
-import '../estilos/GraficasTiempoReal.css';
+import '../GraficasTiempoReal.css';
 
 const GraficasTiempoReal = () => {
-  const serverUrl = process.env.REACT_APP_SERVER_URL;
+  let serverUrl;
+  if (process.env.NODE_ENV === 'development') {
+    serverUrl = process.env.REACT_APP_SERVER_URL; // Usa el valor del .env en local
+  } else {
+    // Usa el proxy en Docker
+    serverUrl = ''; // Puedes establecer la URL del proxy aquí, por ejemplo, '/api'
+  }
   const [datosCpu, setDatosCpu] = useState(null);
   const [datosRam, setDatosRam] = useState(null);
   const cpuChartRef = useRef(null);

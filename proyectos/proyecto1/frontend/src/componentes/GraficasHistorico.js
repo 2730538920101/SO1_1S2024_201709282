@@ -1,9 +1,15 @@
-import '../estilos/GraficasHistorico.css';
+import '../GraficasHistorico.css';
 import React, { useState, useEffect } from 'react';
 import { Line } from 'react-chartjs-2';
 
 const GraficasHistorico = () => {
-  const serverUrl = process.env.REACT_APP_SERVER_URL;
+  let serverUrl;
+  if (process.env.NODE_ENV === 'development') {
+    serverUrl = process.env.REACT_APP_SERVER_URL; // Usa el valor del .env en local
+  } else {
+    // Usa el proxy en Docker
+    serverUrl = ''; // Puedes establecer la URL del proxy aquí, por ejemplo, '/api'
+  }
   const [datosCpu, setDatosCpu] = useState({ lista_cpu: [] });
   const [datosRam, setDatosRam] = useState({ lista_ram: [] });
   const [cpuChart, setCpuChart] = useState(null);

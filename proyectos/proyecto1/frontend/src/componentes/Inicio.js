@@ -1,6 +1,6 @@
 // Inicio.js
 import React from 'react';
-import '../estilos/Inicio.css'; // Asegúrate de importar tus estilos si es necesario
+import '../Inicio.css'; // Asegúrate de importar tus estilos si es necesario
 
 const Inicio = () => {
   return (

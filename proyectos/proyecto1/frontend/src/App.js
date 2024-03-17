@@ -8,6 +8,12 @@ import GraficasHistorico from './componentes/GraficasHistorico';
 import ArbolProcesos from './componentes/ArbolProcesos';
 import AdministrarProcesos from './componentes/AdministrarProcesos';
 import Inicio from './componentes/Inicio';
+import './AdministrarProcesos.css'
+import './Inicio.css'
+import './GraficasHistorico.css'
+import './ArbolProcesos.css'
+import './Navbar.css'
+import './GraficasTiempoReal.css'
 
 const App = () => {
   return (
