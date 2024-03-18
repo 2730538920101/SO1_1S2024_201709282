@@ -57,6 +57,7 @@ services:
       - "80:80"
     depends_on:
       - backend
+    restart: unless-stopped
     networks:
       - p1_network
     environment:
