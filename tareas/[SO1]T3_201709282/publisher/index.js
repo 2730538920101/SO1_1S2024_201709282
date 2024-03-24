@@ -1,30 +1,22 @@
-require('dotenv').config();
-const redis = require('redis');
-
-// Conectarse a la instancia de Redis en Memory Store
-const client = redis.createClient({
-   host: process.env.REDIS_HOST,
-   port: process.env.REDIS_PORT
-});
-
-let counter = 0;
-const maxMessages = 10; // Número máximo de mensajes a publicar
-
-// Publicar un mensaje en el canal 'test' y cerrar el cliente después de completar todas las publicaciones
-function publishMessage() {
-   const message = JSON.stringify({ msg: "Hola a todos" });
-   client.publish('test', message, () => {
-      counter++;
-      if (counter >= maxMessages) {
-         client.quit(); // Cerrar el cliente después de completar todas las publicaciones
-      }
-   });
-}
-
-// Publicar un mensaje cada segundo (solo para demostración)
-const intervalId = setInterval(publishMessage, 1000);
-
-// Detener el intervalo después de un cierto tiempo
-setTimeout(() => {
-   clearInterval(intervalId);
-}, maxMessages * 1000); // Detener el intervalo después de que se haya completado el número máximo de mensajes
+const { createClient } = require("redis");
+(async () => {
+    const client = createClient({
+        socket: {
+            host: process.env.REDIS_HOST,
+            port: process.env.REDIS_PORT,
+        }
+    });
+    client.on("error", (error) => console.log("ERROR CON EL CLIENTE REDIS", error));
+    await client.connect();
+    console.log("CONEXION EXITOSA");
+    setInterval(async () => {
+        const msg = JSON.stringify({ msg: "HOLA MUNDO, SALE 100 :) " });
+        console.log("PUBLICANDO...", msg);
+        try {
+            const result = await client.publish("test", msg);
+            console.log("MENSAJE PUBLICADO EXITOSAMENTE", result);
+        } catch (error) {
+            console.log("ERROR AL PUBLICAR EL MENSAJE", error);
+        }
+    }, 3000);
+})();
