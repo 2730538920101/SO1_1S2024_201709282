@@ -1,4 +1,5 @@
 const { createClient } = require("redis");
+require('dotenv').config();
 (async () => {
     const client = createClient({
         socket: {
