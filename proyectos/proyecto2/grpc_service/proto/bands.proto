@@ -2,7 +2,7 @@ syntax = "proto3";
 
 package band_service;
 
-option go_package = "github.com/2730538920101/SO1_1S2024_201709282/tree/main/proyectos/proyecto2/grpc_service/proto";
+option go_package = "github.com/2730538920101/SO1_1S2024_201709282/tree/main/proyectos/proyecto2/grpc_service";
 
 // Definición del mensaje Band que representa una banda musical.
 message Band {

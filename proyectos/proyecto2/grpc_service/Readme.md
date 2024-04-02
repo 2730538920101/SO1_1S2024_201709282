@@ -11,6 +11,7 @@
     -   go install google.golang.org/protobuf/cmd/protoc-gen-go@v1.28
     -   go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@v1.2
     -   export PATH="$PATH:$(go env GOPATH)/bin"
+    -   Para que la variable de entorno persista en el sistema debemos agregarla al .bashrc con el comando nano y escribindo al final del archivo el comando anterior.
 
 *   Dar permisos de ejecución al script init-proto.sh y ejecutarlo con los comandos:
     -   chmod +x /proto/init-proto.sh
