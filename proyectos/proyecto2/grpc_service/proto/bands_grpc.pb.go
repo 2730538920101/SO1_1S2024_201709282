@@ -4,7 +4,7 @@
 // - protoc             v3.21.12
 // source: bands.proto
 
-package grpc_service
+package proto
 
 import (
 	context "context"
