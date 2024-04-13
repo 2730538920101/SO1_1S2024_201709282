@@ -2,65 +2,85 @@ package main
 
 import (
 	"context"
+	"database/sql"
+	"fmt"
+	pb "grpc_service/proto" // Importa el paquete generado a partir de tu archivo .proto
 	"log"
 	"net"
 
-	pb "github.com/2730538920101/SO1_1S2024_201709282/tree/main/proyectos/proyecto2/grpc_service/proto" // Importa el paquete generado a partir de tu archivo .proto
-
+	_ "github.com/go-sql-driver/mysql"
 	"google.golang.org/grpc"
-
-	"github.com/segmentio/kafka-go"
 )
 
-// Implementa la estructura del servidor
+var ctx = context.Background()
+var db *sql.DB
+
 type server struct {
-	kafkaWriter *kafka.Writer
+	pb.UnimplementedBandServiceServer
 }
 
-// Implementa el método SendBandInfo de la interfaz BandServiceServer
-func (s *server) SendBandInfo(ctx context.Context, in *pb.Band) (*pb.BandResponse, error) {
-	// Envía los datos recibidos al servidor de Kafka
-	err := s.kafkaWriter.WriteMessages(context.Background(), kafka.Message{
-		Value: []byte(in.String()), // Convierte el mensaje de protobuf a []byte
-	})
+const (
+	port = ":3001"
+)
+
+type BandsData struct {
+	name  string
+	album string
+	year  string
+	rank  string
+}
+
+func mysqlConnect() {
+	// Cambia las credenciales según tu configuración de MySQL
+	dsn := "root:t4-password@tcp(34.72.6.2:3306)/test_grpc"
+
+	var err error
+	db, err = sql.Open("mysql", dsn)
 	if err != nil {
-		log.Printf("Error sending message to Kafka: %v", err)
-		return nil, err
+		log.Fatalln(err)
 	}
 
-	// Devuelve una respuesta de éxito al cliente
-	return &pb.BandResponse{Message: "Band information received and sent to Kafka successfully"}, nil
+	err = db.Ping()
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	fmt.Println("Conexión a MySQL exitosa")
+}
+
+func (s *server) SendBandInfo(ctx context.Context, in *pb.Band) (*pb.BandResponse, error) {
+	fmt.Println("Servidor ha recibido informacion desde el cliente")
+	data := BandsData{
+		name:  in.GetName(),
+		album: in.GetAlbum(),
+		year:  in.GetYear(),
+		rank:  in.GetRank(),
+	}
+	fmt.Println(data)
+	insertMySQL(data)
+	return &pb.BandResponse{Message: "Data recibida e insertada en la base de datos exitosamente desde el servidor"}, nil
+}
+
+func insertMySQL(voto BandsData) {
+	// Prepara la consulta SQL para la inserción en MySQL
+	query := "INSERT INTO VOTO (NOMBRE, ALBUM, ANIO, RANKING) VALUES (?, ?, ?, ?)"
+	_, err := db.ExecContext(ctx, query, voto.name, voto.album, voto.year, voto.rank)
+	if err != nil {
+		log.Println("Error al insertar en MySQL:", err)
+	}
 }
 
 func main() {
-	// Define el puerto en el que el servidor gRPC escuchará las solicitudes
-	port := ":50051"
-
-	// Inicializa el cliente de Kafka
-	kafkaWriter := kafka.NewWriter(kafka.WriterConfig{
-		Brokers:  []string{"kafka-broker1:9092", "kafka-broker2:9092"}, // Actualiza con las direcciones de tus brokers Kafka
-		Topic:    "band_topic",                                         // Nombre del tema en el que se enviarán los mensajes
-		Balancer: &kafka.LeastBytes{},
-	})
-
-	// Defer cerrar el cliente de Kafka al finalizar el programa
-	defer kafkaWriter.Close()
-
-	// Crea una nueva instancia de servidor gRPC
-	lis, err := net.Listen("tcp", port)
+	listen, err := net.Listen("tcp", port)
 	if err != nil {
-		log.Fatalf("Failed to listen: %v", err)
+		log.Fatalln(err)
 	}
-
-	// Crea un nuevo servidor gRPC
 	s := grpc.NewServer()
+	pb.RegisterBandServiceServer(s, &server{})
 
-	// Registra la implementación del servidor junto con el cliente de Kafka
-	pb.RegisterBandServiceServer(s, &server{kafkaWriter})
+	mysqlConnect()
 
-	// Inicia el servidor
-	log.Printf("Server listening at %v", lis.Addr())
-	if err := s.Serve(lis); err != nil {
-		log.Fatalf("Failed to serve: %v", err)
+	if err := s.Serve(listen); err != nil {
+		log.Fatalln(err)
 	}
 }

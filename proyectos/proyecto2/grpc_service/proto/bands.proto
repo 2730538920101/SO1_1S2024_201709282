@@ -9,7 +9,7 @@ message Band {
   string name = 1;
   string album = 2;
   string year = 3;
-  int32 rank = 4;
+  string rank = 4;
 }
 
 // Definición del servicio BandService que contendrá los métodos para interactuar con las bandas musicales.

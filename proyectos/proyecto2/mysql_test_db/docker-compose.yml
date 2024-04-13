@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+
+  # Servicio para la base de datos
+  database:
+    image: "mysql"
+    container_name: database_container
+    volumes:
+      - t4_data:/var/lib/mysql
+      - ./script.sql:/docker-entrypoint-initdb.d/script.sql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test_grpc
+      MYSQL_USER: t4_user
+      MYSQL_PASSWORD: t4_password
+
+volumes:
+  t4_data:
