@@ -1,0 +1,55 @@
+services:
+  grpc_server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: carlosmz87/p2_grpc_server:latest
+    depends_on:
+      - database
+    restart: on-failure
+    ports:
+      - "3001:3001"
+    environment:
+      CLIENT_PORT: ${CLIENT_PORT}
+    networks:
+      - grpc_network
+
+  grpc_client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: carlosmz87/p2_grpc_client:latest
+    depends_on:
+      - database
+    restart: on-failure
+    ports:
+      - "3000:3000"
+    environment:
+      SERVER_PORT: ${SERVER_PORT}
+      CLIENT_HOST: ${CLIENT_HOST}
+      CLIENT_PORT: ${CLIENT_PORT}
+    networks:
+      - grpc_network
+
+  database:
+    image: "mysql"
+    container_name: database_container
+    volumes:
+      - t4_data:/var/lib/mysql
+      - ./script.sql:/docker-entrypoint-initdb.d/script.sql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: test_grpc
+      MYSQL_USER: t4_user
+      MYSQL_PASSWORD: t4_password
+    networks:
+      - grpc_network
+
+volumes:
+  t4_data:
+
+networks:
+  grpc_network:
+  
