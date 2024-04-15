@@ -14,12 +14,11 @@ import (
 )
 
 // CargarVariablesEntorno carga las variables de entorno desde el archivo .env
-func CargarVariablesEntorno() error {
+func CargarVariablesEntorno() {
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("No se pudo cargar el archivo .env, cargando variables de entorno del sistema...")
+		fmt.Println("No se encuentra el archivo .env, puede estar en el entorno de produccion, cargando variables de entorno del sistema...")
 	}
-	return nil
 }
 
 type server struct {
@@ -48,12 +47,8 @@ func (s *server) SendBandInfo(ctx context.Context, in *pb.Band) (*pb.BandRespons
 
 func main() {
 
-	err := CargarVariablesEntorno()
+	CargarVariablesEntorno()
 	client_port := obtenerPuertoCliente()
-	if err != nil {
-		fmt.Println("Error cargando variables de entorno desde el archivo .env:", err)
-		fmt.Println("Obteniendo variables de entorno del sistema...")
-	}
 	fmt.Printf("La comunicacion con el cliente se realiza en el puerto: %d\n", client_port)
 	// Inicializa client_port después de cargar las variables de entorno
 	listen, err := net.Listen("tcp", fmt.Sprintf(":%d", client_port))

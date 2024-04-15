@@ -16,12 +16,11 @@ import (
 )
 
 // CargarVariablesEntorno carga las variables de entorno desde el archivo .env
-func CargarVariablesEntorno() error {
+func CargarVariablesEntorno() {
 	err := godotenv.Load()
 	if err != nil {
-		fmt.Println("No se pudo cargar el archivo .env, cargando variables de entorno del sistema...")
+		fmt.Println("No se encuentra el archivo .env, puede estar en el entorno de produccion, cargando variables de entorno del sistema...")
 	}
-	return nil
 }
 
 var ctx = context.Background()
@@ -119,13 +118,9 @@ func obtenerPuertoServer() int {
 }
 
 func main() {
-	err := CargarVariablesEntorno()
+	CargarVariablesEntorno()
 	server_port := obtenerPuertoServer()
 	fmt.Printf("Transmitiendo por el puerto: %d\n", server_port)
-	if err != nil {
-		fmt.Println("Error cargando variables de entorno desde el archivo .env:", err)
-		fmt.Println("Obteniendo variables de entorno del sistema...")
-	}
 	app := fiber.New()
 
 	// Middleware para CORS
@@ -144,7 +139,7 @@ func main() {
 	// Endpoint GET para recibir mensajes
 	app.Get("/receive", getMessage)
 
-	err = app.Listen(fmt.Sprintf(":%d", server_port))
+	err := app.Listen(fmt.Sprintf(":%d", server_port))
 	if err != nil {
 		return
 	}
