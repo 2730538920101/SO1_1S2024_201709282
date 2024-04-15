@@ -9,42 +9,9 @@ import (
 	"os"
 	"strconv"
 
-	"database/sql"
-
-	_ "github.com/go-sql-driver/mysql"
 	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 )
-
-var db *sql.DB
-var ctx = context.Background()
-
-func mysqlConnect() {
-	// Cambia las credenciales según tu configuración de MySQL
-	dsn := "t4_user:t4_password@tcp(database:3306)/test_grpc"
-
-	var err error
-	db, err = sql.Open("mysql", dsn)
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	err = db.Ping()
-	if err != nil {
-		log.Fatalln(err)
-	}
-
-	fmt.Println("Conexión a MySQL exitosa")
-}
-
-func insertMySQL(voto BandsData) {
-	// Prepara la consulta SQL para la inserción en MySQL
-	query := "INSERT INTO VOTO (NOMBRE, ALBUM, ANIO, RANKING) VALUES (?, ?, ?, ?)"
-	_, err := db.ExecContext(ctx, query, voto.name, voto.album, voto.year, voto.rank)
-	if err != nil {
-		log.Println("Error al insertar en MySQL:", err)
-	}
-}
 
 // CargarVariablesEntorno carga las variables de entorno desde el archivo .env
 func CargarVariablesEntorno() error {
@@ -75,12 +42,12 @@ func (s *server) SendBandInfo(ctx context.Context, in *pb.Band) (*pb.BandRespons
 		rank:  in.GetRank(),
 	}
 	fmt.Println(data)
-	insertMySQL(data)
+
 	return &pb.BandResponse{Message: "Data recibida exitosamente desde el servidor"}, nil
 }
 
 func main() {
-	mysqlConnect()
+
 	err := CargarVariablesEntorno()
 	client_port := obtenerPuertoCliente()
 	if err != nil {

@@ -8,9 +8,9 @@ import (
 	"os"
 	"strconv"
 
-	"github.com/joho/godotenv"
-
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/cors"
+	"github.com/joho/godotenv"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -127,6 +127,12 @@ func main() {
 		fmt.Println("Obteniendo variables de entorno del sistema...")
 	}
 	app := fiber.New()
+
+	// Middleware para CORS
+	app.Use(cors.New(cors.Config{
+		AllowOrigins: "*",
+		AllowMethods: "GET,POST",
+	}))
 
 	app.Get("/", func(c *fiber.Ctx) error {
 		return c.JSON(fiber.Map{
