@@ -1,0 +1,11 @@
+/home/omen/Escritorio/SO1_1S2024_201709282/proyectos/proyecto2/wasm_service/wasm_server/target/wasm32-wasi/release/deps/libgetrandom-5f4c7f9b72671111.rmeta: /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/lib.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/error.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/util.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/error_impls.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/wasi.rs
+
+/home/omen/Escritorio/SO1_1S2024_201709282/proyectos/proyecto2/wasm_service/wasm_server/target/wasm32-wasi/release/deps/libgetrandom-5f4c7f9b72671111.rlib: /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/lib.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/error.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/util.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/error_impls.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/wasi.rs
+
+/home/omen/Escritorio/SO1_1S2024_201709282/proyectos/proyecto2/wasm_service/wasm_server/target/wasm32-wasi/release/deps/getrandom-5f4c7f9b72671111.d: /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/lib.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/error.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/util.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/error_impls.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/wasi.rs
+
+/home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/lib.rs:
+/home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/error.rs:
+/home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/util.rs:
+/home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/error_impls.rs:
+/home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/getrandom-0.2.14/src/wasi.rs:

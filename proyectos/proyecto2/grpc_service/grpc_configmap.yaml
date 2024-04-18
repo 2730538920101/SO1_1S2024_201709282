@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config
+  namespace: grpc-cluster
+  labels:
+    app: grpc
+data:
+  SERVER_PORT: "3000"
+  CLIENT_HOST: "localhost"
+  CLIENT_PORT: "3001"

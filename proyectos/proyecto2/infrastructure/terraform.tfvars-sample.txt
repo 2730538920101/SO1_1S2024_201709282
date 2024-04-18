@@ -1,0 +1,2 @@
+project_id = "PROYECT ID"
+region     = "us-central1"

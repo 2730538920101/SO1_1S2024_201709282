@@ -1,0 +1,12 @@
+/home/omen/Escritorio/SO1_1S2024_201709282/proyectos/proyecto2/wasm_service/wasm_server/target/debug/deps/libmime_guess-7205dc2074a5671a.rmeta: /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/lib.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/impl_bin_search.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/mime_types.rs /home/omen/Escritorio/SO1_1S2024_201709282/proyectos/proyecto2/wasm_service/wasm_server/target/debug/build/mime_guess-d6fbf22ee1ac2e61/out/mime_types_generated.rs
+
+/home/omen/Escritorio/SO1_1S2024_201709282/proyectos/proyecto2/wasm_service/wasm_server/target/debug/deps/libmime_guess-7205dc2074a5671a.rlib: /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/lib.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/impl_bin_search.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/mime_types.rs /home/omen/Escritorio/SO1_1S2024_201709282/proyectos/proyecto2/wasm_service/wasm_server/target/debug/build/mime_guess-d6fbf22ee1ac2e61/out/mime_types_generated.rs
+
+/home/omen/Escritorio/SO1_1S2024_201709282/proyectos/proyecto2/wasm_service/wasm_server/target/debug/deps/mime_guess-7205dc2074a5671a.d: /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/lib.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/impl_bin_search.rs /home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/mime_types.rs /home/omen/Escritorio/SO1_1S2024_201709282/proyectos/proyecto2/wasm_service/wasm_server/target/debug/build/mime_guess-d6fbf22ee1ac2e61/out/mime_types_generated.rs
+
+/home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/lib.rs:
+/home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/impl_bin_search.rs:
+/home/omen/.cargo/registry/src/index.crates.io-6f17d22bba15001f/mime_guess-2.0.4/src/mime_types.rs:
+/home/omen/Escritorio/SO1_1S2024_201709282/proyectos/proyecto2/wasm_service/wasm_server/target/debug/build/mime_guess-d6fbf22ee1ac2e61/out/mime_types_generated.rs:
+
+# env-dep:OUT_DIR=/home/omen/Escritorio/SO1_1S2024_201709282/proyectos/proyecto2/wasm_service/wasm_server/target/debug/build/mime_guess-d6fbf22ee1ac2e61/out
