@@ -11,6 +11,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/joho/godotenv"
+	"github.com/segmentio/kafka-go"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials/insecure"
 )
@@ -32,6 +33,31 @@ type BandsData struct {
 	rank  string
 }
 
+func sendToKafka(voto BandsData) {
+	// Configura el escritor de Kafka
+	writer := &kafka.Writer{
+		Addr:         kafka.TCP(os.Getenv("KAFKA_BROKER")),
+		Topic:        os.Getenv("KAFKA_TOPIC"),
+		Balancer:     &kafka.LeastBytes{},
+		RequiredAcks: kafka.RequireAll,
+	}
+	defer writer.Close()
+
+	// Datos a enviar como un mensaje a Kafka
+	message := fmt.Sprintf("name: %s, album: %s, year: %s, rank: %s", voto.name, voto.album, voto.year, voto.rank)
+
+	// Crea un mensaje Kafka y lo envía
+	msg := kafka.Message{
+		Key:   []byte(voto.name),
+		Value: []byte(message),
+	}
+
+	if err := writer.WriteMessages(ctx, msg); err != nil {
+		log.Fatalf("Error al enviar datos a Kafka: %s", err)
+	}
+	fmt.Println("Datos enviados a Kafka exitosamente.")
+}
+
 func insertData(c *fiber.Ctx) error {
 	var data map[string]string
 	e := c.BodyParser(&data)
@@ -47,6 +73,8 @@ func insertData(c *fiber.Ctx) error {
 	}
 
 	go sendServer(voto)
+	fmt.Println("SE ENVIARAN LOS DATOS A KAFKA...")
+	sendToKafka(voto)
 	return nil
 }
 

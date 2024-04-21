@@ -21,9 +21,11 @@ services:
     ports:
       - "3000:3000"
     environment:
-      SERVER_PORT: ${SERVER_PORT}
-      CLIENT_HOST: ${CLIENT_HOST}
-      CLIENT_PORT: ${CLIENT_PORT}
+      SERVER_PORT:  ${SERVER_PORT}
+      CLIENT_HOST:  ${CLIENT_HOST}
+      CLIENT_PORT:  ${CLIENT_PORT}
+      KAFKA_BROKER: ${KAFKA_BROKER}
+      KAFKA_TOPIC:  ${KAFKA_TOPIC}
     networks:
       - grpc_network
 

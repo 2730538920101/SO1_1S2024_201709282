@@ -2,7 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: grpc-deployment
-  namespace: grpc-cluster
+  namespace: p2-cluster
   labels:
     app: grpc
 spec:
@@ -53,6 +53,16 @@ spec:
                 configMapKeyRef:
                   name: env-config
                   key: CLIENT_PORT
+            - name: KAFKA_BROKER
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: KAFKA_BROKER
+            - name: KAFKA_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config
+                  key: KAFKA_TOPIC
           resources:
             limits:
               cpu: "0.5"   # Límite de CPU

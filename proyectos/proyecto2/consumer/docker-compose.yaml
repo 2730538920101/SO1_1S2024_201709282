@@ -1,0 +1,11 @@
+services:
+  consumer:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: carlosmz87/p2-consumer:latest
+    ports:
+      - "3000:3000"  # Mapea el puerto 3000 del contenedor al puerto 3000 del host
+    environment:
+      KAFKA_BROKER: my-cluster-kafka-bootstrap:9092
+      KAFKA_TOPIC: topic-p2
