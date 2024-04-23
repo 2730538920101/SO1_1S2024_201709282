@@ -1,0 +1,8 @@
+services:
+
+    # Servicio para la base de datos
+  database:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: carlosmz87/p2_redisdb:latest

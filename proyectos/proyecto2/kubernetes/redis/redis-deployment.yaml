@@ -1,0 +1,29 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: redis-deployment
+  namespace: p2-cluster
+  labels:
+    app: redis
+spec:
+  replicas: 1  # Puedes ajustar el número de réplicas según tus necesidades
+  selector:
+    matchLabels:
+      app: redis
+  template:
+    metadata:
+      labels:
+        app: redis
+    spec:
+      containers:
+        - name: redis
+          image: carlosmz87/p2_redisdb:latest
+          ports:
+            - containerPort: 6379  # Puerto en el que Redis escucha
+          resources:
+            requests:
+              cpu: "0.1"  # Solicitud de 0.1 vCPU
+              memory: "256Mi"  # Solicitud de 256 MiB de memoria RAM
+            limits:
+              cpu: "1"  # Límite de 1 vCPU
+              memory: "512Mi"  # Límite de 512 MiB de memoria RAM

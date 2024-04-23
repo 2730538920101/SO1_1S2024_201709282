@@ -9,3 +9,9 @@ services:
     environment:
       KAFKA_BROKER: my-cluster-kafka-bootstrap:9092
       KAFKA_TOPIC: topic-p2
+      MONGO_USER: admin
+      MONGO_PASSWORD: admin
+      MONGO_HOST: 34.29.36.163
+      MONGO_PORT: 27017
+      REDIS_ADDR: 34.72.181.216:6379
+      REDIS_PASSWORD: admin

@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: env-config-consumer
+  namespace: p2-cluster
+  labels:
+    app: consumer
+data:
+  KAFKA_BROKER: "my-cluster-kafka-bootstrap:9092"
+  KAFKA_TOPIC:  "topic-p2"
+  MONGO_USER: "admin"
+  MONGO_PASSWORD: "admin"
+  MONGO_HOST: "10.55.244.43"
+  MONGO_PORT: "27017"
+  REDIS_ADDR: "10.55.253.93:6379"
+  REDIS_PASSWORD: "admin"

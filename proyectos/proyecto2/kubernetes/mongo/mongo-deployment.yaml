@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db-mongodb
+  namespace: p2-cluster
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mongodb
+  template:
+    metadata:
+      labels:
+        app: mongodb
+    spec:
+      containers:
+      - name: mongodb
+        image: carlosmz87/p2_mongodb:latest
+        ports:
+        - containerPort: 27017
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME
+          value: "admin"
+        - name: MONGO_INITDB_ROOT_PASSWORD
+          value: "admin"
+        resources:
+          limits:
+            cpu: "1"   # Límite de CPU
+            memory: "2Gi"  # Límite de memoria RAM
+          requests:
+            cpu: "0.5"   # Solicitud de CPU
+            memory: "1Gi"  # Solicitud de memoria RAM

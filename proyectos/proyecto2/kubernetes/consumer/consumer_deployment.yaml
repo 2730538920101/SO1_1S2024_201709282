@@ -1,0 +1,71 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: consumer-deployment
+  namespace: p2-cluster
+  labels:
+    app: consumer
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: consumer
+  template:
+    metadata:
+      labels:
+        app: consumer
+    spec:
+      containers:
+        - name: consumer
+          image: carlosmz87/p2-consumer:latest
+          ports:
+            - containerPort: 3000
+          env:
+            - name: KAFKA_BROKER
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config-consumer
+                  key: KAFKA_BROKER
+            - name: KAFKA_TOPIC
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config-consumer
+                  key: KAFKA_TOPIC
+            - name: MONGO_USER
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config-consumer
+                  key: MONGO_USER
+            - name: MONGO_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config-consumer
+                  key: MONGO_PASSWORD
+            - name: MONGO_HOST
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config-consumer
+                  key: MONGO_HOST
+            - name: MONGO_PORT
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config-consumer
+                  key: MONGO_PORT
+            - name: REDIS_ADDR
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config-consumer
+                  key: REDIS_ADDR
+            - name: REDIS_PASSWORD
+              valueFrom:
+                configMapKeyRef:
+                  name: env-config-consumer
+                  key: REDIS_PASSWORD
+          resources:
+            limits:
+              cpu: "0.5"   # Límite de CPU
+              memory: "512Mi"  # Límite de memoria RAM
+            requests:
+              cpu: "0.1"   # Solicitud de CPU
+              memory: "256Mi"  # Solicitud de memoria RAM
+        
