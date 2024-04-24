@@ -1,0 +1,36 @@
+services:
+  # Servicio para el backend
+  backend:
+    build:
+      context: ./backend
+    image: carlosmz87/p2_backend_api:latest
+    container_name: p2_backend_container
+    ports:
+      - "3000:3000"
+    networks:
+      - p2_network
+    restart: always
+    environment:
+      DB_URL: mongodb://admin:admin@34.29.36.163:27017?tls=false
+      PORT: 3000
+      MONGO_DATABASE: proyecto2
+      MONGO_COLLECTION: voto
+  # Servicio para el frontend
+  frontend:
+    build:
+      context: ./frontend
+    image: carlosmz87/p2_frontend_api:latest
+    container_name: p2_frontend_container
+    ports:
+      - "80:80"
+    depends_on:
+      - backend
+    restart: unless-stopped
+    environment:
+      VUE_APP_API_URL: https://backend-service-dz3zpydyhq-uc.a.run.app/logs
+    networks:
+      - p2_network
+    links:
+      - backend
+networks:
+  p2_network:
